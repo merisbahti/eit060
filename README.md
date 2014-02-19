@@ -7,7 +7,7 @@ För att bygga:
     
 För att rensa: 
 
-    $ ant
+    $ ant clean
     
 Detta tar bort allt som genereras under byggkommandot.
 
