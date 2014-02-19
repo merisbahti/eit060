@@ -1,12 +1,15 @@
-eda060
-======
-
 Bygginstruktioner
 =================
 
 För att bygga: 
 
     $ ant
+    
+För att rensa: 
+
+    $ ant
+    
+Detta tar bort allt som genereras under byggkommandot.
 
 Körinstruktioner
 ================
