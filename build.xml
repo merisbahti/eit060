@@ -1,4 +1,4 @@
-<project name="Le Hospital System" default="dist" basedir=".">
+<project name="Le Hospital System" default="pack" basedir=".">
     <description>
 			This is le buildfile pour le hospital system.
     </description>
@@ -6,7 +6,6 @@
   <property name="src" location="src"/>
   <property name="build" location="build"/>
   <property name="bin" location="bin"/>
-  <property name="dist"  location="dist"/>
   <property name="stores"  location="stores"/>
   <property name="lib"  location="lib"/>
 
@@ -17,21 +16,19 @@
     <mkdir dir="${build}"/>
   </target>
 
+  <!-- Kompilera filerna och lägg ner dem i ./build
+       För att förbereda dem för förpackning. -->
   <target name="compile" depends="init"
         description="compile the source " >
-    <javac srcdir="${src}" destdir="${build}" includeantruntime="false">
-      <classpath>
-        <pathelement path="${classpath}" />
-        <fileset dir="${lib}">
-           <include name="*.jar"/>
-        </fileset>
-      </classpath>
-    </javac>
+    <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
   </target>
 
-  <target name="dist" depends="compile"
-        description="generate the distribution" >
-
+  <!-- Packa ner den kompilerade koden i .jar filer.
+       en för server (som exkluderar alla client-classfiler)
+       samt en för klient (som exkluderar alla server-classfiler)
+       Detta möjliggör för oss att ha en gemensam modell i t.ex
+       en model mapp.-->
+  <target name="pack" depends="compile" description="generate the distribution" >
     <mkdir dir="${bin}"/>
 
     <jar destfile="${bin}/server.jar"> 
@@ -53,13 +50,10 @@
       </manifest>
     </jar>
 
-    <mkdir dir="${build}"/>
-
+    <delete dir="${build}"/>
   </target>
 
-  <target name="clean"
-        description="clean up" >
-    <!-- Delete the ${build} and ${dist} directory trees -->
+  <target name="clean" description="clean up" >
     <delete dir="${build}"/>
     <delete dir="${bin}"/>
   </target>
