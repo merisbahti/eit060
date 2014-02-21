@@ -89,8 +89,8 @@ public class Client {
                 System.out.println("received '" + in.readLine() + "' from server\n");
             }
             in.close();
-			out.close();
-			read.close();
+            out.close();
+            read.close();
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
