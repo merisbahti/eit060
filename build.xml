@@ -4,7 +4,8 @@
     </description>
 	 <!-- set global properties for this build -->
   <property name="src" location="src"/>
-  <property name="build" location="bin"/>
+  <property name="build" location="build"/>
+  <property name="bin" location="bin"/>
   <property name="dist"  location="dist"/>
   <property name="stores"  location="stores"/>
   <property name="lib"  location="lib"/>
@@ -26,23 +27,15 @@
         </fileset>
       </classpath>
     </javac>
-<!--
-		<copy todir="${build}">
-			<fileset dir="${stores}">
-					<include name="*"/>
-			</fileset>
-		</copy>
--->
   </target>
 
   <target name="dist" depends="compile"
         description="generate the distribution" >
 
-    <delete dir="${build}"/>
-    <mkdir dir="${build}"/>
+    <mkdir dir="${bin}"/>
 
-    <jar destfile="server.jar"> 
-      <fileset dir="bin">
+    <jar destfile="${bin}/server.jar"> 
+      <fileset dir="${build}">
         <exclude name="**/client/**"/>
       </fileset>
       <zipfileset includes="**/*.class" src="lib/sqlite.jar"/>
@@ -51,8 +44,8 @@
       </manifest>
     </jar>
 
-    <jar destfile="client.jar"> 
-      <fileset dir="bin">
+    <jar destfile="${bin}/client.jar"> 
+      <fileset dir="${build}">
         <exclude name="**/server/**"/>
       </fileset>
       <manifest>
@@ -60,11 +53,14 @@
       </manifest>
     </jar>
 
+    <mkdir dir="${build}"/>
+
   </target>
 
   <target name="clean"
         description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->
     <delete dir="${build}"/>
+    <delete dir="${bin}"/>
   </target>
 </project>
