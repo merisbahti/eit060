@@ -20,7 +20,7 @@
        För att förbereda dem för förpackning. -->
   <target name="compile" depends="init"
         description="compile the source " >
-    <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
+    <javac srcdir="${src}" destdir="${build}"  includeantruntime="false"/>
   </target>
 
   <!-- Packa ner den kompilerade koden i .jar filer.
@@ -36,6 +36,7 @@
         <exclude name="**/client/**"/>
       </fileset>
       <zipfileset includes="**/*.class" src="lib/sqlite.jar"/>
+      <zipfileset includes="**/*.class" src="lib/json-simple.jar"/>
       <manifest>
         <attribute name="Main-Class" value="server/Server"/>
       </manifest>
@@ -45,6 +46,7 @@
       <fileset dir="${build}">
         <exclude name="**/server/**"/>
       </fileset>
+      <zipfileset includes="**/*.class" src="lib/json-simple.jar"/>
       <manifest>
         <attribute name="Main-Class" value="client/Client"/>
       </manifest>
