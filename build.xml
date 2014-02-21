@@ -26,31 +26,45 @@
         </fileset>
       </classpath>
     </javac>
-
+<!--
 		<copy todir="${build}">
 			<fileset dir="${stores}">
 					<include name="*"/>
 			</fileset>
 		</copy>
-
+-->
   </target>
 
   <target name="dist" depends="compile"
         description="generate the distribution" >
 
-     <jar destfile="server.jar">
-      <fileset dir="bin"/>
+    <delete dir="${build}"/>
+    <mkdir dir="${build}"/>
+
+    <jar destfile="server.jar"> 
+      <fileset dir="bin">
+        <exclude name="**/client/**"/>
+      </fileset>
       <zipfileset includes="**/*.class" src="lib/sqlite.jar"/>
       <manifest>
         <attribute name="Main-Class" value="server/Server"/>
       </manifest>
     </jar>
+
+    <jar destfile="client.jar"> 
+      <fileset dir="bin">
+        <exclude name="**/server/**"/>
+      </fileset>
+      <manifest>
+        <attribute name="Main-Class" value="client/Client"/>
+      </manifest>
+    </jar>
+
   </target>
 
   <target name="clean"
         description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->
     <delete dir="${build}"/>
-    <delete dir="${dist}"/>
   </target>
 </project>

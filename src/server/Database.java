@@ -11,7 +11,7 @@ public class Database {
   Connection conn; 
 
   public Database() throws ClassNotFoundException {
-    Class.forName("org.sqlite.JDBC");/
+    Class.forName("org.sqlite.JDBC");
     conn = null;
     connect();
     init();
