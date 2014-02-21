@@ -4,6 +4,8 @@ Bygginstruktioner
 För att bygga: 
 
     $ ant
+
+detta kommer skapa .jar-arkiv med dem relevanta filerna för Server respektive Klient i ./bin katalogen.
     
 För att rensa: 
 
@@ -22,11 +24,15 @@ Navigera till bin:
   
 För att köra server:
 
-    $ java server port
+    $ java -jar server.jar port
   
 för att köra klient:
 
-    $ java client ip port
+    $ java -jar client.jar ip port
 
 där ip är localhost (om du kör lokalt).
 
+OBSERVERA! 2014-02-21:
+
+Keystores måste existera för server/client i samma directory 
+för server/klient när man kör.
