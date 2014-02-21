@@ -18,7 +18,15 @@
 
   <target name="compile" depends="init"
         description="compile the source " >
-		<javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
+    <javac srcdir="${src}" destdir="${build}" includeantruntime="false">
+      <classpath>
+        <pathelement path="${classpath}" />
+        <fileset dir="${lib}">
+           <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+
 		<copy todir="${build}">
 			<fileset dir="${stores}">
 					<include name="*"/>
@@ -29,11 +37,14 @@
 
   <target name="dist" depends="compile"
         description="generate the distribution" >
-    <!-- Create the distribution directory 
-			<mkdir dir="${dist}/lib"/>
 
-    	Put everything in ${build} into the MyProject-${DSTAMP}.jar file 
-			<jar jarfile="${dist}/lib/MyProject-${DSTAMP}.jar" basedir="${build}"/> -->
+     <jar destfile="server.jar">
+      <fileset dir="bin"/>
+      <zipfileset includes="**/*.class" src="lib/sqlite.jar"/>
+      <manifest>
+        <attribute name="Main-Class" value="server/Server"/>
+      </manifest>
+    </jar>
   </target>
 
   <target name="clean"
