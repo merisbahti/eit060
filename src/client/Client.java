@@ -74,19 +74,19 @@ public class Client {
             BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String msg;
-			for (;;) {
-                System.out.print(">");
-                msg = read.readLine();
-                if (msg.equalsIgnoreCase("quit")) {
-				    break;
-				}
-                System.out.print("sending '" + msg + "' to server...");
-                out.println(msg);
-                out.flush();
-                System.out.println("done");
 
-                System.out.println("received '" + in.readLine() + "' from server\n");
+            String msg;
+            for (;;) {
+              System.out.print(">");
+              msg = read.readLine();
+              if (msg.equalsIgnoreCase("quit")) {
+                break;
+              }
+              System.out.print("sending '" + msg + "' to server...");
+              out.println(msg);
+              out.flush();
+              System.out.println("done");
+              System.out.println("received '" + in.readLine() + "' from server\n");
             }
             in.close();
             out.close();
