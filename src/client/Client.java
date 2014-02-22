@@ -6,6 +6,7 @@ import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
 import java.security.KeyStore;
 import java.security.cert.*;
+import model.*;
 
 /*
  * This example shows how to set up a key manager to perform client
@@ -82,6 +83,7 @@ public class Client {
               if (msg.equalsIgnoreCase("quit")) {
                 break;
               }
+              generateRequest(msg);
               System.out.print("sending '" + msg + "' to server...");
               out.println(msg);
               out.flush();
@@ -97,4 +99,19 @@ public class Client {
         }
     }
 
+    private static Request generateRequest(String input) {
+      switch (input.split(" ")[0]) {
+        case "A": System.out.print("Add request recieved");
+                  break;
+        case "D": System.out.print("Delete request recieved");
+                  break;
+        case "E": System.out.print("Add request recieved");
+                  break;
+        case "W": System.out.print("View request recieved");
+                  break;
+        default: System.out.print("Not sure what to do with this");
+                 break;
+      }
+      return new ReadRequest("abc");
+    }
 }
