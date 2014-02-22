@@ -100,18 +100,22 @@ public class Client {
     }
 
     private static Request generateRequest(String input) {
-      switch (input.split(" ")[0]) {
+      // TODO: Skapa ett nullrequest.
+      Request request = null;
+      String[] cmd = input.split(" ");
+      switch (cmd[0]) {
+        case "R": System.out.print("Requesting to read file id: " + cmd[1]);
+                  request = new ReadRequest(cmd[1]);
+                  break;
         case "A": System.out.print("Add request recieved");
                   break;
         case "D": System.out.print("Delete request recieved");
                   break;
         case "E": System.out.print("Add request recieved");
                   break;
-        case "W": System.out.print("View request recieved");
-                  break;
         default: System.out.print("Not sure what to do with this");
                  break;
       }
-      return new ReadRequest("abc");
+      return request;
     }
 }
