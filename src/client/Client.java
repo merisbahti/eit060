@@ -84,11 +84,12 @@ public class Client {
                 break;
               }
               generateRequest(msg);
-              System.out.print("sending '" + msg + "' to server...");
+              
+              //System.out.print("sending '" + msg + "' to server...");
               out.println(msg);
               out.flush();
               System.out.println("done");
-              System.out.println("received '" + in.readLine() + "' from server\n");
+              //System.out.println("received '" + in.readLine() + "' from server\n");
             }
             in.close();
             out.close();
@@ -104,16 +105,20 @@ public class Client {
       Request request = null;
       String[] cmd = input.split(" ");
       switch (cmd[0]) {
-        case "R": System.out.print("Requesting to read file id: " + cmd[1]);
+        case "R": System.out.println("Requesting to read file id: " + cmd[1]);
                   request = new ReadRequest(cmd[1]);
                   break;
-        case "A": System.out.print("Add request recieved");
+        case "A": System.out.println("Sending add request");
                   break;
-        case "D": System.out.print("Delete request recieved");
+        case "D": System.out.println("Sending delete request");
                   break;
-        case "E": System.out.print("Add request recieved");
+        case "E": System.out.println("Sending edit request");
                   break;
-        default: System.out.print("Not sure what to do with this");
+        case "L": System.out.println("Sending list request");
+                  break;
+        case "H": System.out.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a fil: D id\nTo edit a file: E id content\nTo list all files that you have access to: L\n");
+                  break;
+        default: System.out.println("Not sure what to do with this, type \"H\" for usage.");
                  break;
       }
       return request;
