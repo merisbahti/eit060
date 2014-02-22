@@ -36,7 +36,6 @@
         <exclude name="**/client/**"/>
       </fileset>
       <zipfileset includes="**/*.class" src="lib/sqlite.jar"/>
-      <zipfileset includes="**/*.class" src="lib/json-simple.jar"/>
       <manifest>
         <attribute name="Main-Class" value="server/Server"/>
       </manifest>
@@ -46,7 +45,6 @@
       <fileset dir="${build}">
         <exclude name="**/server/**"/>
       </fileset>
-      <zipfileset includes="**/*.class" src="lib/json-simple.jar"/>
       <manifest>
         <attribute name="Main-Class" value="client/Client"/>
       </manifest>

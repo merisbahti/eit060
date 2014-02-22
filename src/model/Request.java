@@ -1,10 +1,6 @@
 package model;
 
-public class Request {
+public interface Request {
 
-  final int INSERT = 0;
-  final int DELETE = 1;
-  final int VIEW = 2;
-  final int ERROR = -1;
 
 }
