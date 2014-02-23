@@ -9,6 +9,14 @@
   <property name="stores"  location="stores"/>
   <property name="lib"  location="lib"/>
 
+  <property name="tst-dir" location="test" />
+  <property name="TALK" value="true" />
+
+
+  <path id="classpath.test">
+    <pathelement location="${lib}/junit.jar" />
+  </path>
+
   <target name="init">
     <!-- Create the time stamp -->
     <tstamp/>
@@ -20,7 +28,9 @@
        För att förbereda dem för förpackning. -->
   <target name="compile" depends="init"
         description="compile the source " >
-    <javac srcdir="${src}" destdir="${build}"  includeantruntime="false"/>
+    <javac srcdir="${src}" destdir="${build}"  includeantruntime="false">
+      <classpath refid="classpath.test"/>
+    </javac>
   </target>
 
   <!-- Packa ner den kompilerade koden i .jar filer.
@@ -50,8 +60,25 @@
       </manifest>
     </jar>
 
-    <delete dir="${build}"/>
   </target>
+
+  <target name="test" depends="pack">
+      <junit printsummary="yes">
+          <classpath>
+              <path refid="classpath.test"/>
+          </classpath>
+          <batchtest fork="yes">
+              <fileset dir="${src}" includes="tests/*Test.java"/>
+          </batchtest>
+      </junit>
+  </target>
+
+  <target name="server" depends="pack">
+  </target> 
+
+  <target name="client" depends="pack">
+  </target> 
+  
 
   <target name="clean" description="clean up" >
     <delete dir="${build}"/>
