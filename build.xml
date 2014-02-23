@@ -80,7 +80,7 @@
   </target> 
 
   <target name="client" depends="test">
-    <java jar="${bin}/server.jar" fork="true">
+    <java jar="${bin}/client.jar" fork="true">
       <arg line="localhost"/>
       <arg line="9876"/>
     </java>

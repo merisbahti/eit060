@@ -16,23 +16,21 @@ Detta tar bort allt som genereras under byggkommandot.
 Körinstruktioner
 ================
 
-Innan du kör programmen så måste du befinna dig i bin/.
+Enklaste sättet att både kompilera, köra tester samt köra är att göra som följer:
 
-Navigera till bin:
-
-    $ cd bin
-  
 För att köra server:
 
-    $ java -jar server.jar port
+    $ ant server 
+
+Detta startar en server på port 9876 och hämtar serverkeystore samt servertruststore från stores/ mappen.
   
 för att köra klient:
 
-    $ java -jar client.jar ip port
+    $ ant client
 
-där ip är localhost (om du kör lokalt).
+Detta startar klienten och kopplar sig till localhost:9876. stores från stores/
 
-OBSERVERA! 2014-02-21:
+För att endast kompilera->packa->testa så kör du:
 
-Keystores måste existera för server/client i samma directory 
-för server/klient när man kör.
+    $ ant test
+

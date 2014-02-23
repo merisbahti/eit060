@@ -7,7 +7,6 @@ import java.security.KeyStore;
 import javax.net.*;
 import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
-import server.Database;
 
 
 
@@ -17,30 +16,7 @@ public class Server implements Runnable {
 
 	public Server(ServerSocket ss) throws IOException {
 		serverSocket = ss;
-
-    /* Initera DB */
-    Database db = null;
-
-    /* Initera DB del 2
-     * här måste vi ha någon classnotfoundexception för att jdbc kan strula.
-     * men för att jag kådat så bra så kommer de aldri hända xD*/
-    try {
-      db = new Database();
-    } catch (ClassNotFoundException e) {
-      System.err.print("You done good'd");
-    }
-
-    /* populate database */
-    db.insertJournal("fittpenis", "juggalowhoress");
-    db.insertJournal("fittpenis2", "juggalowhoress2");
-
-    /* titta lite på database */
-    db.getJournal("fittpenis");
-    db.getJournal("fittpenis2");
-
-    
 		newListener();
-
 	}
 
 	public void run() {
@@ -114,8 +90,8 @@ public class Server implements Runnable {
 				KeyStore ts = KeyStore.getInstance("JKS");
                 char[] password = "password".toCharArray();
 
-                ks.load(new FileInputStream("serverkeystore"), password);  // keystore password (storepass)
-                ts.load(new FileInputStream("servertruststore"), password); // truststore password (storepass)
+                ks.load(new FileInputStream("stores/serverkeystore"), password);  // keystore password (storepass)
+                ts.load(new FileInputStream("stores/servertruststore"), password); // truststore password (storepass)
                 kmf.init(ks, password); // certificate password (keypass)
                 tmf.init(ts);  // possible to use keystore as truststore here
                 ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
