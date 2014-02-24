@@ -9,15 +9,15 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-/*
- * Klass med endast statiska metoder för att skapa PBKDF2 hashade strängar.
+/* 
+ * Class with static methods for creation of PBKDF2 hashed strings.
  */
 public class PBKDF2{
   private static final int ITERATIONS = 1000;
   private static final int KEY_LENGTH = 192;
 
   /*
-   * Skapa hashen (i form av en sträng).
+   * Create hash, in form of a string
    */
   public static String generateHash(String pw, byte[] saltBytes) throws InvalidKeySpecException, NoSuchAlgorithmException{
     char[] pwChars = pw.toCharArray();
@@ -37,9 +37,9 @@ public class PBKDF2{
   }
 
   /*
-   * generera random 32 BYTES salt.
-   * vi använder här SecureRandom, den är säker
-   * eftersom den använder secure i namnet
+   * Generate random 32 bytes salt
+   * SecureRandom is being used, it's safe as fuck
+   * since it uses the word secure in its name.
    */
   public static byte[] generateSalt() {
     final Random r = new SecureRandom();
