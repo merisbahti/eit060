@@ -56,12 +56,14 @@ public class Database {
    */
   public void insertJournal(String doctor, String nurse, String patient, String district, String content) {
     try { 
+      String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+	  String dbContent = String.format(date + "%n" + content);
       PreparedStatement pstatement = conn.prepareStatement("insert into journal (doctor, nurse, patient, district, content) values(?, ?, ?, ?, ?)");
       pstatement.setString(1, doctor);
       pstatement.setString(2, nurse);
       pstatement.setString(3, patient);
       pstatement.setString(4, district);
-      pstatement.setString(5, content);
+      pstatement.setString(5, dbContent);
       pstatement.setQueryTimeout(30);  
       pstatement.executeUpdate();
     } catch (SQLException e) {
@@ -85,12 +87,12 @@ public class Database {
       // @TODO: Return a journal
       while(rs.next())
       {
-        System.out.println("id = " + rs.getInt("id"));
-        System.out.println("doctor = " + rs.getString("doctor"));
-        System.out.println("nurse = " + rs.getString("nurse"));
-        System.out.println("patient = " + rs.getString("patient"));
-        System.out.println("district = " + rs.getString("district"));
-        System.out.println("content = " + rs.getString("content"));
+          System.out.println("id = " + rs.getInt("id"));
+          System.out.println("doctor = " + rs.getString("doctor"));
+          System.out.println("nurse = " + rs.getString("nurse"));
+          System.out.println("patient = " + rs.getString("patient"));
+          System.out.println("district = " + rs.getString("district"));
+          System.out.println("content = " + rs.getString("content"));
       }
     } catch (SQLException e) {
       System.err.println("SQL Exception: " + e.getMessage());
@@ -139,7 +141,20 @@ public class Database {
   /*
    * Return an implementation of List<Journal>
    */
-  public void getMyJournals(String sslFingerPrint) {
-	  
+  public void getMyJournals() {
+	  try{
+		  PreparedStatement pstatement = conn.prepareStatement("select * from journal");
+		  ResultSet rs = pstatement.executeQuery();
+		  while(rs.next()){
+		      System.out.println("id = " + rs.getInt("id"));
+		      System.out.println("doctor = " + rs.getString("doctor"));
+		      System.out.println("nurse = " + rs.getString("nurse"));
+		      System.out.println("patient = " + rs.getString("patient"));
+		      System.out.println("district = " + rs.getString("district"));
+		      System.out.println("content = " + rs.getString("content"));
+		  }
+	  }catch(SQLException e){
+		  System.err.println("SQL Exception: " + e.getMessage());
+	  }
   }
 }
