@@ -1,8 +1,6 @@
 bin/*
-bin
-*
-.db
-*
+bin*
+*.db
 /*.db
 build/*
 build

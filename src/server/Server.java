@@ -23,7 +23,6 @@ public class Server implements Runnable {
 
 	public void run() {
 		try {
-			
 			SSLSocket socket=(SSLSocket)serverSocket.accept();
 			newListener();
 			SSLSession session = socket.getSession();
@@ -35,13 +34,9 @@ public class Server implements Runnable {
 			System.out.println("client name (cert subject DN field): " + subject);
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
-			PrintWriter out = null;
-			BufferedReader in = null;
-
       ObjectOutputStream outSocket = new ObjectOutputStream(socket.getOutputStream());
       ObjectInputStream inSocket = new ObjectInputStream(socket.getInputStream());
 
-			String clientMsg = null;
       Request req = null;
       try {
         while ((req = (Request) inSocket.readObject()) != null) {
@@ -55,8 +50,8 @@ public class Server implements Runnable {
       } catch (ClassNotFoundException e) {
         System.err.println("Classnotfoundexception: " + e.getMessage());
       }
-			in.close();
-			out.close();
+      inSocket.close();
+      outSocket.close();
 			socket.close();
 			numConnectedClients--;
 			System.out.println("client disconnected");
