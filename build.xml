@@ -77,13 +77,13 @@
       </junit>
   </target>
 
-  <target name="server" depends="test">
+  <target name="server" depends="pack">
     <java jar="${bin}/server.jar" fork="true">
       <arg line="9876"/>
     </java>
   </target> 
 
-  <target name="client" depends="test">
+  <target name="client" depends="pack">
     <java jar="${bin}/client.jar" fork="true">
       <arg line="localhost"/>
       <arg line="9876"/>
