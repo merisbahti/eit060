@@ -1,13 +1,10 @@
 bin/*
-
 bin
 *
 .db
 *
 /*.db
-
 build/*
-
 build
-
 .project
+.project/*

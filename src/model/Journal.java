@@ -1,6 +1,4 @@
 package model;
-
-
 public class Journal {
 
 	private int ID;
@@ -10,13 +8,17 @@ public class Journal {
 	private String content;
 	private String district;
 	
+
+
 public Journal(String doctor, String nurse, String patient, String content, String district){
+
 		this.doctor = doctor;
 		this.nurse = nurse;
 		this.patient = patient;
 		this.content = content;
 		this.district = district;
 	}
+
   public String getContent() {
     return content;
   }

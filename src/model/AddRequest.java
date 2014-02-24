@@ -1,8 +1,8 @@
 package model;
 
 public class AddRequest implements Request {
-	
 	private Journal journal;
+	
   public AddRequest(Journal journal) {
     this.journal = journal;
   } 
@@ -11,7 +11,7 @@ public class AddRequest implements Request {
     return null; 
   }
   
-  public String getJournal(){
+  public Journal getJournal(){
 	  return journal;
   }
 
