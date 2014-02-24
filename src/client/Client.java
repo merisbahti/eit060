@@ -131,7 +131,11 @@ public class Client {
 			request = new ReadRequest(cmd[1]);
 			break;
 		case "A":
-			System.out.println("Sending add request");
+      Journal journal = null;
+      while (journal == null) {
+        journal = promptJournal();
+      }
+      request = new AddRequest(journal);
 			break;
 		case "D":
       if (cmd.length != 2) {
@@ -160,4 +164,20 @@ public class Client {
 		}
 		return request;
 	}
+
+  private static Journal promptJournal(){
+    try {
+      BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+      System.out.println("Nurse social security number: ");
+      String nurseSSN = read.readLine();
+      System.out.println("Patient social security number: ");
+      String patientSSN = read.readLine();
+      System.out.println("Content: ");
+      String content = read.readLine();
+      return new Journal("ADD DOCTOR FROM CERT HERE", nurseSSN, patientSSN, content, "ADD DISTRIKT FROM CERT HERE");
+    } catch (IOException e) {
+      return null;
+    }
+  }
+
 }

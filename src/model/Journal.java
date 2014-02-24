@@ -1,5 +1,6 @@
 package model;
-public class Journal {
+import java.io.Serializable;
+public class Journal implements Serializable{
 
 	private int ID;
 	private String doctor;
@@ -11,7 +12,6 @@ public class Journal {
 
 
 public Journal(String doctor, String nurse, String patient, String content, String district){
-
 		this.doctor = doctor;
 		this.nurse = nurse;
 		this.patient = patient;
