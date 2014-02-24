@@ -7,10 +7,10 @@ public class AddRequest implements Request {
   } 
 
   public String getID() {
-    return id; 
+    return null; 
   }
   
-  public String getJournal(){
+  public Journal getJournal(){
 	  return journal;
   }
 
