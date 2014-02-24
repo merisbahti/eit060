@@ -63,7 +63,7 @@
 
   </target>
 
-  <target name="test" depends="pack">
+  <target name="test" depends="compile">
       <junit printsummary="yes" showoutput="true">
           <classpath>
               <path refid="classpath.test"/>
