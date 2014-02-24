@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 
 public class Database {
   Connection conn; 
+  LogDatabase log;
 
   /*
    * Init class and look for SQLITE-JDBC drive
@@ -18,6 +19,7 @@ public class Database {
   public Database() throws ClassNotFoundException {
     Class.forName("org.sqlite.JDBC");
     conn = null;
+    log = new LogDatabase();
     connect();
     init();
   }
@@ -38,23 +40,30 @@ public class Database {
    */
   private void init() {
     try { 
-    	//Statement statement = conn.createStatement();
-    	//String sql = "drop table journal";
-    	
       Statement statement = conn.createStatement();
       statement.setQueryTimeout(30); 
-      //statement.executeUpdate(sql);
       statement.executeUpdate("create table if not exists journal(ID INTEGER PRIMARY KEY   AUTOINCREMENT, doctor string, nurse string, patient string, district string, content string)");
     } catch (SQLException e) {
       System.err.println("SQL Exception: " + e.getMessage());
     }
   }
-
+  public boolean dropJournalsAndClearLog(){
+	  try{
+	    Statement statement = conn.createStatement();
+	    statement.setQueryTimeout(30); 
+	    statement.executeUpdate("drop table journal");
+	    log.clearLog();
+	    return true;
+	  }catch(SQLException e){
+		  System.err.println("SQL Exception: " + e.getMessage());
+		  return false;
+	  }
+  }
   /*
    * Add journal
    * Return false if ID already exists.
    */
-  public void insertJournal(String doctor, String nurse, String patient, String district, String content) {
+  public boolean insertJournal(String doctor, String nurse, String patient, String district, String content) {
     try { 
       String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 	  String dbContent = String.format(date + "%n" + content);
@@ -66,8 +75,10 @@ public class Database {
       pstatement.setString(5, dbContent);
       pstatement.setQueryTimeout(30);  
       pstatement.executeUpdate();
+      return true;
     } catch (SQLException e) {
       System.err.println("SQL Exception: " + e.getMessage());
+      return false;
     }
   }
 
@@ -76,12 +87,11 @@ public class Database {
    * Get specific Journal
    * NullJournal / null if Journal doesn't exist, or access not granted.
    */
-  public void getJournal(int id) {
+  public boolean getJournal(int id) {
     try { 
       PreparedStatement pstatement = conn.prepareStatement("select * from journal where ID=? ");
       pstatement.setInt(1,id);
       pstatement.setQueryTimeout(30);  
-      pstatement.executeQuery();
       ResultSet rs = pstatement.executeQuery();
       // @TODO: Handle empty journal
       // @TODO: Return a journal
@@ -94,8 +104,11 @@ public class Database {
           System.out.println("district = " + rs.getString("district"));
           System.out.println("content = " + rs.getString("content"));
       }
+      log.writeLog(id, "Random Nurse", "read");
+      return true;
     } catch (SQLException e) {
       System.err.println("SQL Exception: " + e.getMessage());
+      return false;
     }
   }
 
@@ -107,6 +120,7 @@ public class Database {
 		  PreparedStatement pstatement = conn.prepareStatement("delete from journal where ID = ?");
 		  pstatement.setInt(1, id);
 		  pstatement.executeUpdate();
+		  log.writeLog(id, "Some Doctor", "delete");
 		  return true;
 	  }catch(SQLException e){
 		  System.err.println("SQL Exception: " + e.getMessage());
@@ -132,6 +146,7 @@ public class Database {
 		  pstatement.setString(5,dbContent);
 		  pstatement.setInt(6,id);
 		  pstatement.executeUpdate();
+		  log.writeLog(id, "Some Doctor", "update");
 		  return true;
 	  }catch(SQLException e){
 		  System.err.println("SQL Exception: " + e.getMessage());
@@ -141,7 +156,7 @@ public class Database {
   /*
    * Return an implementation of List<Journal>
    */
-  public void getMyJournals() {
+  public boolean getMyJournals() {
 	  try{
 		  PreparedStatement pstatement = conn.prepareStatement("select * from journal");
 		  ResultSet rs = pstatement.executeQuery();
@@ -152,9 +167,16 @@ public class Database {
 		      System.out.println("patient = " + rs.getString("patient"));
 		      System.out.println("district = " + rs.getString("district"));
 		      System.out.println("content = " + rs.getString("content"));
+		      log.writeLog(rs.getInt("id"), "Some Doctor", "read");
 		  }
+		  return true;
 	  }catch(SQLException e){
 		  System.err.println("SQL Exception: " + e.getMessage());
+		  return false;
 	  }
+  }
+  public boolean printLog(){
+	  boolean printed = log.printLog();
+	  return printed;
   }
 }
