@@ -15,8 +15,8 @@ public class PBKDF2Test extends junit.framework.TestCase {
       fail("Denna dator stödjer inte PBKDF2 med Hmac SHA1 och är därför inte lämplig som server");
     }
     /*
-     * Notera gärna att detta test endast är avsett för att undersöka om 
-     * denna server stödjer den utmärkta säkerheten vi har i våra hash
+     * Please note that this test is only used to
+     * examine if the server supports out hash algorithms.
      */
     assertTrue(true);
   }

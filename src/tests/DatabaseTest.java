@@ -8,10 +8,10 @@ public class DatabaseTest extends junit.framework.TestCase {
   Database db = null;
 
     public void setUp() {
-      /* Initera DB del 2
-       * här måste vi ha någon classnotfoundexception för att jdbc kan strula.
-       * men för att jag kådat så bra så kommer de aldri hända xD*/
-      /* Initera DB */
+      /* Init DB part 2
+       * Must catch classnotfound exception.
+       * But this is some safe ass code, so it wont never happen.
+      /* Init DB */
         try {
           db = new Database();
         } catch (ClassNotFoundException e) {
@@ -24,7 +24,7 @@ public class DatabaseTest extends junit.framework.TestCase {
       
       db.insertJournal("fittpenis", "juggalowhoress");
       db.insertJournal("fittpenis2", "juggalowhoress2");
-      /* titta lite på database */
+      /* watch some on the databaze */
       db.getJournal("fittpenis");
       db.getJournal("fittpenis2");
       assertTrue(true);
