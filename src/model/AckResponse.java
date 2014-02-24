@@ -6,6 +6,7 @@ public class AckResponse implements Response {
 
   public AckResponse(boolean ack, String msg) {
     this.ack = ack;
+    this.msg = msg;
   }
 
   public String getMessage() {
