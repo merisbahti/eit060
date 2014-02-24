@@ -33,10 +33,12 @@ public class DatabaseTest extends junit.framework.TestCase {
     	assert(succeeded);
     }
     public void testDeleteJournal() {
-    	db.deleteJournal(2);
+    	boolean succeeded = db.deleteJournal(2);
     	db.getJournal(2);
+    	assert(succeeded);
     }
     public void testGetMyJournals() {
     	db.getMyJournals();
+    	assert(true);
     }
 }
