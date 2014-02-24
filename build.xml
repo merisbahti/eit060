@@ -15,6 +15,7 @@
 
   <path id="classpath.test">
     <pathelement location="${lib}/junit.jar" />
+    <pathelement location="lib/sqlite.jar"/>
   </path>
 
   <target name="init">
@@ -63,13 +64,16 @@
   </target>
 
   <target name="test" depends="pack">
-      <junit printsummary="yes">
+      <junit printsummary="yes" showoutput="true">
           <classpath>
               <path refid="classpath.test"/>
+              <pathelement location="${build}/tests"/>
+              <pathelement location="${build}"/>
           </classpath>
           <batchtest fork="yes">
               <fileset dir="${src}" includes="tests/*Test.java"/>
           </batchtest>
+          <formatter type="brief" usefile="false"/>
       </junit>
   </target>
 
