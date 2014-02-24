@@ -81,30 +81,38 @@ public class Client {
 			System.out.println("socket after handshake:\n" + socket + "\n");
 			System.out.println("secure connection established\n\n");
 
+
 			BufferedReader read = new BufferedReader(new InputStreamReader(
 					System.in));
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+
+      
+      //ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
+      ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
+
+			//PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 
 			String msg;
+
 			for (;;) {
-				System.out.print(">");
 				msg = read.readLine();
 				if (msg.equalsIgnoreCase("quit")) {
 					break;
 				}
-				generateRequest(msg);
-
-				// System.out.print("sending '" + msg + "' to server...");
-				out.println(msg);
-				out.flush();
-				System.out.println("done");
-				// System.out.println("received '" + in.readLine() +
-				// "' from server\n");
+        Request req = generateRequest(msg);
+        if (req!=null) {
+          outStream.writeObject(req);
+          outStream.flush();
+          System.out.print("sending '"+ req.getID() +"' to server...");
+          System.out.println("done");
+          System.out.println("received '" + in.readLine() +
+          "' from server\n");
+        }
 			}
 			in.close();
-			out.close();
+			outStream.close();
 			read.close();
 			socket.close();
 		} catch (Exception e) {
@@ -113,7 +121,6 @@ public class Client {
 	}
 
 	private static Request generateRequest(String input) {
-		// TODO: Skapa ett nullrequest.
 		Request request = null;
 		String[] cmd = input.split(" ");
 		switch (cmd[0]) {
@@ -126,16 +133,20 @@ public class Client {
 			break;
 		case "D":
 			System.out.println("Sending delete request");
+      request = new DeleteRequest(cmd[2]);
 			break;
-		case "E":
-			System.out.println("Sending edit request");
+		case "W":
+			System.out.println("Sending write request");
+			System.out.println("Requesting to write to file id: " + cmd[1] + "\ncontent to append: " + cmd[2]);
+      request = new EditRequest(cmd[1], cmd[2]);
 			break;
 		case "L":
 			System.out.println("Sending list request");
+      request = new ListRequest();
 			break;
 		case "H":
 			System.out
-					.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a fil: D id\nTo edit a file: E id content\nTo list all files that you have access to: L\n");
+					.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a fil: D id\nTo write to a file: w id content\nTo list all files that you have access to: L\n");
 			break;
 		default:
 			System.out

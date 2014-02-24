@@ -1,7 +1,9 @@
 package model;
 
-public class ReadRequest implements Request {
-  static String id;
+import java.io.Serializable;
+
+public class ReadRequest implements Request, Serializable {
+  private final String id;
 
   public ReadRequest(String id) {
     this.id = id;

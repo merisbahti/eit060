@@ -1,6 +1,7 @@
 package model;
+import java.io.Serializable;
 
-public class AddRequest implements Request {
+public class AddRequest implements Request, Serializable {
 	private Journal journal;
 	
   public AddRequest(Journal journal) {

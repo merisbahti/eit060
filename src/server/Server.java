@@ -7,6 +7,7 @@ import java.security.KeyStore;
 import javax.net.*;
 import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
+import model.*;
 
 
 
@@ -35,20 +36,31 @@ public class Server implements Runnable {
 
 			PrintWriter out = null;
 			BufferedReader in = null;
+
 			out = new PrintWriter(socket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      ObjectInputStream inSocket = new ObjectInputStream(socket.getInputStream());
 
 			String clientMsg = null;
-			while ((clientMsg = in.readLine()) != null) {
-        /*
-				String rev = new StringBuilder(clientMsg).reverse().toString();
-				System.out.println("received '" + clientMsg + "' from client");
-				System.out.print("sending '" + rev + "' to client...");
-				out.println(rev);
-				out.flush();
-				System.out.println("done\n");
-        */
-			}
+      Object req = null;
+      try {
+        while ((req = inSocket.readObject()) != null) {
+          if (req instanceof ReadRequest) {
+            ReadRequest readRequest = (ReadRequest) req;
+            String id = readRequest.getID();
+            System.out.print("sending '" + id + "' to client...");
+            out.println(id);
+            out.flush();
+            System.out.println("done\n");
+          } 
+          else {
+            out.println("Sorry, inget komparitbelebtt request");
+            out.flush();
+            System.out.println("done\n");
+          }
+        } 
+      } catch (ClassNotFoundException e) {
+        System.err.println("Classnotfoundexception: " + e.getMessage());
+      }
 			in.close();
 			out.close();
 			socket.close();
