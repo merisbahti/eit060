@@ -1,14 +1,17 @@
 package model;
 
 public class AddRequest implements Request {
-  int id;
-
-  public AddRequest(int id) {
-    this.id = id;
+	private Journal journal;
+  public AddRequest(Journal journal) {
+    this.journal = journal;
   } 
 
   public String getID() {
     return id; 
+  }
+  
+  public String getJournal(){
+	  return journal;
   }
 
 }
