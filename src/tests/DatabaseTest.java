@@ -7,8 +7,11 @@ import org.junit.*;
 public class DatabaseTest extends junit.framework.TestCase {
   Database db = null;
 
-    @Before
-    public void before() {
+    public void setUp() {
+      /* Initera DB del 2
+       * här måste vi ha någon classnotfoundexception för att jdbc kan strula.
+       * men för att jag kådat så bra så kommer de aldri hända xD*/
+      /* Initera DB */
         try {
           db = new Database();
         } catch (ClassNotFoundException e) {
@@ -16,18 +19,8 @@ public class DatabaseTest extends junit.framework.TestCase {
         }
     }
 
-    @Test
     public void testWillAlwaysFail() {
-      /* Initera DB */
-      /* Initera DB del 2
-       * här måste vi ha någon classnotfoundexception för att jdbc kan strula.
-       * men för att jag kådat så bra så kommer de aldri hända xD*/
       /* populate database */
-      try {
-        db = new Database();
-      } catch (ClassNotFoundException e) {
-        System.err.print("You done goof'd");
-      }
       
       db.insertJournal("fittpenis", "juggalowhoress");
       db.insertJournal("fittpenis2", "juggalowhoress2");
