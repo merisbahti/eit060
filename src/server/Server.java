@@ -8,6 +8,7 @@ import javax.net.*;
 import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
 import model.*;
+import java.util.ArrayList;
 
 
 
@@ -37,25 +38,18 @@ public class Server implements Runnable {
 			PrintWriter out = null;
 			BufferedReader in = null;
 
-			out = new PrintWriter(socket.getOutputStream(), true);
+      ObjectOutputStream outSocket = new ObjectOutputStream(socket.getOutputStream());
       ObjectInputStream inSocket = new ObjectInputStream(socket.getInputStream());
 
 			String clientMsg = null;
-      Object req = null;
+      Request req = null;
       try {
-        while ((req = inSocket.readObject()) != null) {
-          if (req instanceof ReadRequest) {
-            ReadRequest readRequest = (ReadRequest) req;
-            String id = readRequest.getID();
-            System.out.print("sending '" + id + "' to client...");
-            out.println(id);
-            out.flush();
-            System.out.println("done\n");
-          } 
-          else {
-            out.println("Sorry, inget komparitbelebtt request");
-            out.flush();
-            System.out.println("done\n");
+        while ((req = (Request) inSocket.readObject()) != null) {
+          Response resp = generateResponse(req); 
+          if (resp!=null) {
+            outSocket.writeObject(resp);
+            outSocket.flush();
+            System.out.println("done");
           }
         } 
       } catch (ClassNotFoundException e) {
@@ -120,5 +114,24 @@ public class Server implements Runnable {
             return ServerSocketFactory.getDefault();
         }
         return null;
+    }
+
+    private static Response generateResponse(Request req) {
+          if (req instanceof ReadRequest) {
+            ReadRequest readRequest = (ReadRequest) req;
+            String id = readRequest.getID();
+            return new AckResponse(true, "ReadRequest recieved");
+          } else if (req instanceof ListRequest) {
+            return new AckResponse(false, "Listrequest recieved");
+          } else if (req instanceof DeleteRequest) {
+            return new AckResponse(false, "Deleterequest recieved");
+          } else if (req instanceof AddRequest) {
+            return new AckResponse(false, " Addrequest recieved");
+          } else if (req instanceof EditRequest) {
+            return new AckResponse(false, "EditRequest recieved");
+          } else {
+            return new AckResponse(false, "Don't know wtf recieved");
+          }
+    
     }
 }

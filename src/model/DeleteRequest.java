@@ -1,8 +1,6 @@
 package model;
 
-import java.io.Serializable;
-
-public class DeleteRequest implements Request, Serializable{
+public class DeleteRequest implements Request{
   private final String id;
 
   public DeleteRequest(String id) {

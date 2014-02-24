@@ -1,5 +1,9 @@
 package model;
 
-public interface Response { 
+import java.io.Serializable;
+
+public interface Response extends Serializable{ 
+
+  public String getMessage(); 
   
 }

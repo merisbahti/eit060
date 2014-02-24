@@ -7,6 +7,7 @@ import javax.security.cert.X509Certificate;
 import java.security.KeyStore;
 import java.security.cert.*;
 import model.*;
+import java.util.ArrayList;
 
 /*
  * This example shows how to set up a key manager to perform client
@@ -84,10 +85,8 @@ public class Client {
 
 			BufferedReader read = new BufferedReader(new InputStreamReader(
 					System.in));
-
-
       
-      //ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
+      ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
       ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
 
 			//PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -107,8 +106,8 @@ public class Client {
           outStream.flush();
           System.out.print("sending '"+ req.getID() +"' to server...");
           System.out.println("done");
-          System.out.println("received '" + in.readLine() +
-          "' from server\n");
+          Response resp = (Response) inStream.readObject();
+          System.out.println("Recieved response with message: " + resp.getMessage());
         }
 			}
 			in.close();
@@ -133,7 +132,7 @@ public class Client {
 			break;
 		case "D":
 			System.out.println("Sending delete request");
-      request = new DeleteRequest(cmd[2]);
+      request = new DeleteRequest(cmd[1]);
 			break;
 		case "W":
 			System.out.println("Sending write request");

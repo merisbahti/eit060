@@ -1,8 +1,6 @@
 package model;
 
-import java.io.Serializable;
-
-public class EditRequest implements Request, Serializable{
+public class EditRequest implements Request{
   String id;
   String content;
 
