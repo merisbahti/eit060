@@ -131,7 +131,7 @@ public class Client {
 			request = new ReadRequest(cmd[1]);
 			break;
 		case "A":
-			System.out.println("Sending add request");
+			request = new AddRequest(promptJournal());
 			break;
 		case "D":
       if (cmd.length != 2) {
@@ -159,5 +159,15 @@ public class Client {
 			break;
 		}
 		return request;
+	}
+	
+	private Journal promptJournal(){
+		System.out.println("Nurse social security number: ");
+		String nurseSSN = read.readLine();
+		System.out.println("Patient social security number: ");
+		String patientSSN = read.readLine();
+		System.out.println("Content: ");
+		String content = read.readLine();
+		return new Journal("ADD DOCTOR FROM CERT HERE", nurseSSN, patientSSN, content, "ADD DISTRIKT FROM CERT HERE");
 	}
 }
