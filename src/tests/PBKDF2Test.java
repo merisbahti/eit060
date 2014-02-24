@@ -8,15 +8,15 @@ import server.*;
 public class PBKDF2Test extends junit.framework.TestCase {
   public void testCreateHash() {
     try {
-      String hash = PBKDF2.generateHash("mitt lösenord som är hemligt",PBKDF2.generateSalt());
+      String hash = PBKDF2.generateHash("My hidden password!",PBKDF2.generateSalt());
     } catch (InvalidKeySpecException e) {
-      fail("Nyckelns specifikation är ogiltig. Detta kan bero på koden\neller så är det ett symptom på ett större fel");
+      fail("The keys specification is invalid. Wrong code or some bigger conspirecy");
     } catch (NoSuchAlgorithmException e) {
-      fail("Denna dator stödjer inte PBKDF2 med Hmac SHA1 och är därför inte lämplig som server");
+      fail("This computer does not support PBKDF2 med Hmac SHA1 and should therefor not be used as server.");
     }
     /*
-     * Notera gärna att detta test endast är avsett för att undersöka om 
-     * denna server stödjer den utmärkta säkerheten vi har i våra hash
+     * Please note that this test is only used to
+     * examine if the server supports out hash algorithms.
      */
     assertTrue(true);
   }

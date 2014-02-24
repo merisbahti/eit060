@@ -13,7 +13,7 @@ public class Database {
   Connection conn; 
 
   /*
-   * Initiera klassen och leta efter SQLITE-JDBC drivern
+   * Init class and look for SQLITE-JDBC drive
    */
   public Database() throws ClassNotFoundException {
     Class.forName("org.sqlite.JDBC");
@@ -23,7 +23,7 @@ public class Database {
   }
 
   /*
-   * Försök koppla dig till sqlite
+   * Try to connect to sqlite
    */
   private void connect() {
     try {
@@ -34,7 +34,7 @@ public class Database {
   }
 
   /*
-   * ta bort gamla journaler och skapa tabeller för nya
+   * Remove old Journals and create tables for new one
    */
   private void init() {
     try { 
@@ -51,8 +51,8 @@ public class Database {
   }
 
   /*
-   * lägg in journal
-   * returnera false om den redan finns eftersom ID är unikt?
+   * Add journal
+   * Return false if ID already exists.
    */
   public void insertJournal(String doctor, String nurse, String patient, String district, String content) {
     try { 
@@ -71,8 +71,8 @@ public class Database {
 
 
   /*
-   * hämta journal, borde returnera Journal eller typ...
-   * NullJournal / null t.ex om den inte har behörighet eller om journalen inte finns
+   * Get specific Journal
+   * NullJournal / null if Journal doesn't exist, or access not granted.
    */
   public void getJournal(int id) {
     try { 
@@ -81,8 +81,8 @@ public class Database {
       pstatement.setQueryTimeout(30);  
       pstatement.executeQuery();
       ResultSet rs = pstatement.executeQuery();
-      // @TODO: Please hantera vad som sker om den är tom.
-      // @TODO: Please gör så att den returnerar en Journal
+      // @TODO: Handle empty journal
+      // @TODO: Return a journal
       while(rs.next())
       {
         System.out.println("id = " + rs.getInt("id"));
@@ -98,7 +98,7 @@ public class Database {
   }
 
   /*
-   * Returnera en boolean om den lyckades
+   * Return boolean if sucess!
    */
   public boolean deleteJournal(int id) {
 	  try{
@@ -137,7 +137,7 @@ public class Database {
 	  }
   }
   /*
-   * Returnera en godtycklig implementation av List<Journal>
+   * Return an implementation of List<Journal>
    */
   public void getMyJournals(String sslFingerPrint) {
 	  

@@ -21,12 +21,14 @@ public class Server implements Runnable {
 
 	public void run() {
 		try {
+			
 			SSLSocket socket=(SSLSocket)serverSocket.accept();
 			newListener();
 			SSLSession session = socket.getSession();
 			X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
 			String subject = cert.getSubjectDN().getName();
 			numConnectedClients++;
+			
 			System.out.println("client connected");
 			System.out.println("client name (cert subject DN field): " + subject);
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
@@ -38,12 +40,14 @@ public class Server implements Runnable {
 
 			String clientMsg = null;
 			while ((clientMsg = in.readLine()) != null) {
+        /*
 				String rev = new StringBuilder(clientMsg).reverse().toString();
 				System.out.println("received '" + clientMsg + "' from client");
 				System.out.print("sending '" + rev + "' to client...");
 				out.println(rev);
 				out.flush();
 				System.out.println("done\n");
+        */
 			}
 			in.close();
 			out.close();
