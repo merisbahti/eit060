@@ -124,19 +124,27 @@ public class Client {
 		String[] cmd = input.split(" ");
 		switch (cmd[0]) {
 		case "R":
-			System.out.println("Requesting to read file id: " + cmd[1]);
+      if (cmd.length != 2) {
+        System.out.println("command format is wrong xD");
+        break;
+      }
 			request = new ReadRequest(cmd[1]);
 			break;
 		case "A":
+      //@TODO: RObin fixa
 			System.out.println("Sending add request");
 			break;
 		case "D":
+      if (cmd.length != 2) {
+        System.out.println("command format is wrong xD");
+        break;
+      }
 			System.out.println("Sending delete request");
       request = new DeleteRequest(cmd[1]);
 			break;
 		case "W":
+      //@TODO: RObin fixa
 			System.out.println("Sending write request");
-			System.out.println("Requesting to write to file id: " + cmd[1] + "\ncontent to append: " + cmd[2]);
       request = new EditRequest(cmd[1], cmd[2]);
 			break;
 		case "L":
