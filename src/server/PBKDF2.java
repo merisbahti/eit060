@@ -32,8 +32,12 @@ public class PBKDF2{
     return String.format("%x", new BigInteger(hash));
   }
 
+  public static String generateHashWithSaltString(String pw, String saltString) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    return generateHash(pw, saltString.getBytes());
+  }
+
   /*
-   * Hämta generera random 32 BYTES salt.
+   * generera random 32 BYTES salt.
    * vi använder här SecureRandom, den är säker
    * eftersom den använder secure i namnet
    */
@@ -41,6 +45,7 @@ public class PBKDF2{
     final Random r = new SecureRandom();
     byte[] salt = new byte[32];
     r.nextBytes(salt);
+    System.out.println("Generated salt: "+new String(salt));
     return salt; 
   }
 
