@@ -1,6 +1,6 @@
 package model;
 
-public class AddRequest implements Request {
+final public class AddRequest implements Request {
 
   public AddRequest(String content) {
     
