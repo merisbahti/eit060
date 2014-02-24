@@ -2,13 +2,12 @@ package tests;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-
 import org.junit.*;
-
 import server.*;
 
 public class PBKDF2Test extends junit.framework.TestCase {
-  public void testCreateHash() {
+  @Test
+  public void createHashTest() {
     try {
       String hash = PBKDF2.generateHash("mitt lösenord som är hemligt",PBKDF2.generateSalt());
     } catch (InvalidKeySpecException e) {
