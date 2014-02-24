@@ -1,20 +1,14 @@
 package tests;
-import server.Database;
+import org.junit.*;
 import server.*;
 import model.*;
-import org.junit.*;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-public class DatabaseTest extends junit.framework.TestCase {
+
+public class DatabaseTest {
   Database db = null;
 
-    @Before
-    public void before() {
-        try {
-          db = new Database();
-        } catch (ClassNotFoundException e) {
-          System.err.print("You done good'd");
-        }
-    }
 
     @Test
     public void testWillAlwaysFail() {
@@ -23,10 +17,11 @@ public class DatabaseTest extends junit.framework.TestCase {
        * här måste vi ha någon classnotfoundexception för att jdbc kan strula.
        * men för att jag kådat så bra så kommer de aldri hända xD*/
       /* populate database */
+
       try {
         db = new Database();
       } catch (ClassNotFoundException e) {
-        System.err.print("You done goof'd");
+        fail("JDBC drivern är inte laddad");
       }
       
       db.insertJournal("fittpenis", "juggalowhoress");
