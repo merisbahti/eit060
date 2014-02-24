@@ -17,13 +17,9 @@ public class DatabaseTest extends junit.framework.TestCase {
         } catch (ClassNotFoundException e) {
           System.err.print("You done good'd");
         }
-    }
-
-    public void testInsertJournal() {
-      /* populate database */
-      boolean succeeded = db.insertJournal("Hanna", "Robin", "Meris", "Psyk","Massa info om patient");
-      db.getJournal(1);
-      assert(succeeded);
+        // add two journals
+        db.insertJournal("Hanna", "Robin", "Meris", "Psyk","Massa info om patient");
+        db.insertJournal("Doctor Who", "Nurse A", "John Doe", "South Wing","Lots and lots of info");
     }
     public void testUpdate(){
     	System.out.println("Journal before editing:");
@@ -37,15 +33,10 @@ public class DatabaseTest extends junit.framework.TestCase {
     	boolean succeeded = db.getMyJournals();
     	assert(succeeded);
     }
-    public void testPrintLog() {
-    	boolean succeeded = db.printLog();
-    	assert(succeeded);
-    }
-    public void testDeleteJournal() {
-    	boolean succeeded = db.deleteJournal(1);
-    	assert(succeeded);
-    }
+
     public void tearDown() {
+    	db.printLog();
+    	db.deleteJournal(1);
     	boolean succeeded = db.dropJournalsAndClearLog();
     	assert(succeeded);
     }
