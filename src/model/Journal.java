@@ -10,7 +10,7 @@ public class Journal {
 	private String content;
 	private String district;
 	
-	class Journal(String doctor, String nurse, String patient, String content, String district){
+public Journal(String doctor, String nurse, String patient, String content, String district){
 		this.doctor = doctor;
 		this.nurse = nurse;
 		this.patient = patient;
