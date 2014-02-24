@@ -124,14 +124,20 @@ public class Client {
 		String[] cmd = input.split(" ");
 		switch (cmd[0]) {
 		case "R":
-			System.out.println("Requesting to read file id: " + cmd[1]);
+      if (cmd.length != 2) {
+        System.out.println("Wrongly formatted command");
+        return null;
+      }
 			request = new ReadRequest(cmd[1]);
 			break;
 		case "A":
 			System.out.println("Sending add request");
 			break;
 		case "D":
-			System.out.println("Sending delete request");
+      if (cmd.length != 2) {
+        System.out.println("Wrongly formatted command");
+        return null;
+      }
       request = new DeleteRequest(cmd[1]);
 			break;
 		case "W":
