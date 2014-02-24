@@ -11,7 +11,7 @@ public class Journal implements Serializable{
 	
 
 
-public Journal(String doctor, String nurse, String patient, String content, String district){
+public Journal(String doctor, String nurse, String patient, String district, String content){
 		this.doctor = doctor;
 		this.nurse = nurse;
 		this.patient = patient;
@@ -33,5 +33,9 @@ public Journal(String doctor, String nurse, String patient, String content, Stri
 
   public String getDistrict(){
 	  return district;
+  }
+  
+  public String getPatient(){
+	  return patient;
   }
 }
