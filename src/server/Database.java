@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import model.*;
+import java.util.ArrayList;
 
 public class Database {
   Connection conn; 
@@ -63,18 +65,23 @@ public class Database {
    * Add journal
    * Return false if ID already exists.
    */
-  public boolean insertJournal(String doctor, String nurse, String patient, String district, String content) {
+  public boolean insertJournal(Journal journal) {
     try { 
       String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-	  String dbContent = String.format(date + "%n" + content);
+	  String dbContent = String.format(date + "%n" + journal.getContent());
       PreparedStatement pstatement = conn.prepareStatement("insert into journal (doctor, nurse, patient, district, content) values(?, ?, ?, ?, ?)");
-      pstatement.setString(1, doctor);
-      pstatement.setString(2, nurse);
-      pstatement.setString(3, patient);
-      pstatement.setString(4, district);
+      pstatement.setString(1, journal.getDoctor());
+      pstatement.setString(2, journal.getNurse());
+      pstatement.setString(3, journal.getPatient());
+      pstatement.setString(4, journal.getDistrict());
       pstatement.setString(5, dbContent);
       pstatement.setQueryTimeout(30);  
       pstatement.executeUpdate();
+      /*
+       * TODO:
+       * Find primary key for last insert
+       * Update log
+       */
       return true;
     } catch (SQLException e) {
       System.err.println("SQL Exception: " + e.getMessage());
@@ -87,7 +94,8 @@ public class Database {
    * Get specific Journal
    * NullJournal / null if Journal doesn't exist, or access not granted.
    */
-  public boolean getJournal(int id) {
+  public Journal getJournal(int id) {
+	  Journal journal = null;
     try { 
       PreparedStatement pstatement = conn.prepareStatement("select * from journal where ID=? ");
       pstatement.setInt(1,id);
@@ -97,6 +105,7 @@ public class Database {
       // @TODO: Return a journal
       while(rs.next())
       {
+    	  journal = new Journal(rs.getInt("id"), rs.getString("doctor"), rs.getString("nurse"), rs.getString("patient"), rs.getString("district"), rs.getString("content"));
           System.out.println("id = " + rs.getInt("id"));
           System.out.println("doctor = " + rs.getString("doctor"));
           System.out.println("nurse = " + rs.getString("nurse"));
@@ -105,11 +114,10 @@ public class Database {
           System.out.println("content = " + rs.getString("content"));
       }
       log.writeLog(id, "Random Nurse", "read");
-      return true;
     } catch (SQLException e) {
       System.err.println("SQL Exception: " + e.getMessage());
-      return false;
     }
+    return journal;
   }
 
   /*
@@ -127,7 +135,7 @@ public class Database {
 		  return false;
 	  }
   }
-  public boolean updateJournal(int id, String doctor, String nurse, String patient, String district, String content){
+  public boolean updateJournal(int id, String content){
 	  try{
 		  PreparedStatement pstatement = conn.prepareStatement("select content from journal where id=?");
 		  pstatement.setInt(1, id);
@@ -138,13 +146,9 @@ public class Database {
 		  }
 		  String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 		  dbContent = String.format(dbContent + "%n %n" + date + "%n" + content);
-		  pstatement = conn.prepareStatement("update journal set doctor = ?, nurse = ?, patient = ?, district = ?, content = ? where ID = ?");
-		  pstatement.setString(1,doctor);
-		  pstatement.setString(2,nurse);
-		  pstatement.setString(3,patient);
-		  pstatement.setString(4,district);
-		  pstatement.setString(5,dbContent);
-		  pstatement.setInt(6,id);
+		  pstatement = conn.prepareStatement("update journal set content = ? where ID = ?");
+		  pstatement.setString(1,dbContent);
+		  pstatement.setInt(2,id);
 		  pstatement.executeUpdate();
 		  log.writeLog(id, "Some Doctor", "update");
 		  return true;
@@ -156,11 +160,14 @@ public class Database {
   /*
    * Return an implementation of List<Journal>
    */
-  public boolean getMyJournals() {
+  public ArrayList<Journal> getMyJournals() {
+	  ArrayList<Journal> journals = new ArrayList<Journal>();
 	  try{
 		  PreparedStatement pstatement = conn.prepareStatement("select * from journal");
 		  ResultSet rs = pstatement.executeQuery();
 		  while(rs.next()){
+			  Journal journal = new Journal(rs.getInt("id"), rs.getString("doctor"), rs.getString("nurse"), rs.getString("patient"), rs.getString("district"), rs.getString("content"));
+			  journals.add(journal);
 		      System.out.println("id = " + rs.getInt("id"));
 		      System.out.println("doctor = " + rs.getString("doctor"));
 		      System.out.println("nurse = " + rs.getString("nurse"));
@@ -169,11 +176,11 @@ public class Database {
 		      System.out.println("content = " + rs.getString("content"));
 		      log.writeLog(rs.getInt("id"), "Some Doctor", "read");
 		  }
-		  return true;
 	  }catch(SQLException e){
 		  System.err.println("SQL Exception: " + e.getMessage());
-		  return false;
+
 	  }
+	  return journals;
   }
   public boolean printLog(){
 	  boolean printed = log.printLog();
