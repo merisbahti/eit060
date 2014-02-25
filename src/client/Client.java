@@ -89,7 +89,6 @@ public class Client {
       ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
       ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
 
-			//PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 
@@ -145,9 +144,19 @@ public class Client {
       request = new DeleteRequest(cmd[1]);
 			break;
 		case "W":
-			System.out.println("Sending write request");
-			System.out.println("Requesting to write to file id: " + cmd[1] + "\ncontent to append: " + cmd[2]);
-      request = new EditRequest(cmd[1], cmd[2]);
+      if (cmd.length != 2) {
+        System.out.println("Wrongly formatted command");
+        return null;
+      }
+      try {
+        BufferedReader readr = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Say what you want to add to the journal: ");
+        String robinaerfull= readr.readLine();
+        request = new EditRequest(cmd[1], robinaerfull);
+      } catch (IOException e) {
+        System.out.print("You are not really dooing stuff right");
+        return null;
+      }
 			break;
 		case "L":
 			System.out.println("Sending list request");
@@ -155,7 +164,7 @@ public class Client {
 			break;
 		case "H":
 			System.out
-					.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a fil: D id\nTo write to a file: w id content\nTo list all files that you have access to: L\n");
+					.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\n");
 			break;
 		default:
 			System.out
@@ -174,7 +183,7 @@ public class Client {
       String patientSSN = read.readLine();
       System.out.println("Content: ");
       String content = read.readLine();
-      return new Journal("ADD DOCTOR FROM CERT HERE", nurseSSN, patientSSN, content, "ADD DISTRIKT FROM CERT HERE");
+      return new Journal("roppe", nurseSSN, patientSSN, content, "district 9");
     } catch (IOException e) {
       return null;
     }
