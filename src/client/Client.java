@@ -89,7 +89,6 @@ public class Client {
       ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
       ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
 
-			//PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 
@@ -124,20 +123,40 @@ public class Client {
 		String[] cmd = input.split(" ");
 		switch (cmd[0]) {
 		case "R":
-			System.out.println("Requesting to read file id: " + cmd[1]);
+      if (cmd.length != 2) {
+        System.out.println("Wrongly formatted command");
+        return null;
+      }
 			request = new ReadRequest(cmd[1]);
 			break;
 		case "A":
-			System.out.println("Sending add request");
+      Journal journal = null;
+      while (journal == null) {
+        journal = promptJournal();
+      }
+      request = new AddRequest(journal);
 			break;
 		case "D":
-			System.out.println("Sending delete request");
+      if (cmd.length != 2) {
+        System.out.println("Wrongly formatted command");
+        return null;
+      }
       request = new DeleteRequest(cmd[1]);
 			break;
 		case "W":
-			System.out.println("Sending write request");
-			System.out.println("Requesting to write to file id: " + cmd[1] + "\ncontent to append: " + cmd[2]);
-      request = new EditRequest(cmd[1], cmd[2]);
+      if (cmd.length != 2) {
+        System.out.println("Wrongly formatted command");
+        return null;
+      }
+      try {
+        BufferedReader readr = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Say what you want to add to the journal: ");
+        String robinaerfull= readr.readLine();
+        request = new EditRequest(cmd[1], robinaerfull);
+      } catch (IOException e) {
+        System.out.print("You are not really dooing stuff right");
+        return null;
+      }
 			break;
 		case "L":
 			System.out.println("Sending list request");
@@ -145,7 +164,7 @@ public class Client {
 			break;
 		case "H":
 			System.out
-					.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a fil: D id\nTo write to a file: w id content\nTo list all files that you have access to: L\n");
+					.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\n");
 			break;
 		default:
 			System.out
@@ -154,4 +173,20 @@ public class Client {
 		}
 		return request;
 	}
+
+  private static Journal promptJournal(){
+    try {
+      BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+      System.out.println("Nurse social security number: ");
+      String nurseSSN = read.readLine();
+      System.out.println("Patient social security number: ");
+      String patientSSN = read.readLine();
+      System.out.println("Content: ");
+      String content = read.readLine();
+      return new Journal("roppe", nurseSSN, patientSSN, content, "district 9");
+    } catch (IOException e) {
+      return null;
+    }
+  }
+
 }

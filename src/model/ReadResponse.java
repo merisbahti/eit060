@@ -10,5 +10,9 @@ public class ReadResponse implements Response {
   public Journal getJournal() {
     return journal; 
   }
+
+  public String getMessage() {
+    return "debug";
+  }
 }
 

@@ -7,6 +7,8 @@ import java.security.KeyStore;
 import javax.net.*;
 import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
+import model.*;
+import java.util.ArrayList;
 
 
 
@@ -21,36 +23,35 @@ public class Server implements Runnable {
 
 	public void run() {
 		try {
-			
 			SSLSocket socket=(SSLSocket)serverSocket.accept();
 			newListener();
 			SSLSession session = socket.getSession();
 			X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
 			String subject = cert.getSubjectDN().getName();
 			numConnectedClients++;
-			
+
 			System.out.println("client connected");
 			System.out.println("client name (cert subject DN field): " + subject);
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
-			PrintWriter out = null;
-			BufferedReader in = null;
-			out = new PrintWriter(socket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      ObjectOutputStream outSocket = new ObjectOutputStream(socket.getOutputStream());
+      ObjectInputStream inSocket = new ObjectInputStream(socket.getInputStream());
 
-			String clientMsg = null;
-			while ((clientMsg = in.readLine()) != null) {
-        /*
-				String rev = new StringBuilder(clientMsg).reverse().toString();
-				System.out.println("received '" + clientMsg + "' from client");
-				System.out.print("sending '" + rev + "' to client...");
-				out.println(rev);
-				out.flush();
-				System.out.println("done\n");
-        */
-			}
-			in.close();
-			out.close();
+      Request req = null;
+      try {
+        while ((req = (Request) inSocket.readObject()) != null) {
+          Response resp = generateResponse(req); 
+          if (resp!=null) {
+            outSocket.writeObject(resp);
+            outSocket.flush();
+            System.out.println("done");
+          }
+        } 
+      } catch (ClassNotFoundException e) {
+        System.err.println("Classnotfoundexception: " + e.getMessage());
+      }
+      inSocket.close();
+      outSocket.close();
 			socket.close();
 			numConnectedClients--;
 			System.out.println("client disconnected");
@@ -70,7 +71,7 @@ public class Server implements Runnable {
         if (args.length >= 1) {
             port = Integer.parseInt(args[0]);
         }
-        String type = "TLS";	
+        String type = "TLS";
         try {
             ServerSocketFactory ssf = getServerSocketFactory(type);
             ServerSocket ss = ssf.createServerSocket(port);
@@ -93,6 +94,7 @@ public class Server implements Runnable {
                 KeyStore ks = KeyStore.getInstance("JKS");
 				KeyStore ts = KeyStore.getInstance("JKS");
                 char[] password = "password".toCharArray();
+
                 ks.load(new FileInputStream("stores/serverkeystore"), password);  // keystore password (storepass)
                 ts.load(new FileInputStream("stores/servertruststore"), password); // truststore password (storepass)
                 kmf.init(ks, password); // certificate password (keypass)
@@ -107,5 +109,24 @@ public class Server implements Runnable {
             return ServerSocketFactory.getDefault();
         }
         return null;
+    }
+
+    private static Response generateResponse(Request req) {
+          if (req instanceof ReadRequest) {
+            ReadRequest readRequest = (ReadRequest) req;
+            String id = readRequest.getID();
+            return new AckResponse(true, "ReadRequest recieved");
+          } else if (req instanceof ListRequest) {
+            return new AckResponse(false, "Listrequest recieved");
+          } else if (req instanceof DeleteRequest) {
+            return new AckResponse(false, "Deleterequest recieved");
+          } else if (req instanceof AddRequest) {
+            return new AckResponse(false, " Addrequest recieved");
+          } else if (req instanceof EditRequest) {
+            return new AckResponse(false, "EditRequest recieved");
+          } else {
+            return new AckResponse(false, "Don't know wtf recieved");
+          }
+    
     }
 }
