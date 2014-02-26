@@ -65,7 +65,7 @@ public class Database {
    * Add journal
    * Return false if ID already exists.
    */
-  public boolean insertJournal(Journal journal) {
+  public boolean insertJournal(Journal journal, String userID) {
     try { 
       String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 	  String dbContent = String.format(date + "%n" + journal.getContent());
@@ -94,7 +94,8 @@ public class Database {
    * Get specific Journal
    * NullJournal / null if Journal doesn't exist, or access not granted.
    */
-  public Journal getJournal(int id) {
+  public Journal getJournal(String journalID, String userID) {
+		int id = Integer.parseInt(journalID);
 	  Journal journal = null;
     try { 
       PreparedStatement pstatement = conn.prepareStatement("select * from journal where ID=? ");
@@ -106,14 +107,8 @@ public class Database {
       while(rs.next())
       {
     	  journal = new Journal(rs.getInt("id"), rs.getString("doctor"), rs.getString("nurse"), rs.getString("patient"), rs.getString("district"), rs.getString("content"));
-          System.out.println("id = " + rs.getInt("id"));
-          System.out.println("doctor = " + rs.getString("doctor"));
-          System.out.println("nurse = " + rs.getString("nurse"));
-          System.out.println("patient = " + rs.getString("patient"));
-          System.out.println("district = " + rs.getString("district"));
-          System.out.println("content = " + rs.getString("content"));
       }
-      log.writeLog(id, "Random Nurse", "read");
+      log.writeLog(id, userID, "read");
     } catch (SQLException e) {
       System.err.println("SQL Exception: " + e.getMessage());
     }
@@ -123,19 +118,22 @@ public class Database {
   /*
    * Return boolean if sucess!
    */
-  public boolean deleteJournal(int id) {
+  public boolean deleteJournal(String journalID, String userID) {
+		int id = Integer.parseInt(journalID);
 	  try{
 		  PreparedStatement pstatement = conn.prepareStatement("delete from journal where ID = ?");
 		  pstatement.setInt(1, id);
 		  pstatement.executeUpdate();
-		  log.writeLog(id, "Some Doctor", "delete");
+		  log.writeLog(id, userID, "delete");
 		  return true;
 	  }catch(SQLException e){
 		  System.err.println("SQL Exception: " + e.getMessage());
 		  return false;
 	  }
   }
-  public boolean updateJournal(int id, String content){
+
+  public boolean updateJournal(String journalID, String content, String userID){
+		int id = Integer.parseInt(journalID);
 	  try{
 		  PreparedStatement pstatement = conn.prepareStatement("select content from journal where id=?");
 		  pstatement.setInt(1, id);
@@ -150,7 +148,7 @@ public class Database {
 		  pstatement.setString(1,dbContent);
 		  pstatement.setInt(2,id);
 		  pstatement.executeUpdate();
-		  log.writeLog(id, "Some Doctor", "update");
+		  log.writeLog(id, userID, "update");
 		  return true;
 	  }catch(SQLException e){
 		  System.err.println("SQL Exception: " + e.getMessage());
@@ -160,7 +158,7 @@ public class Database {
   /*
    * Return an implementation of List<Journal>
    */
-  public ArrayList<Journal> getMyJournals() {
+  public ArrayList<Journal> getMyJournals(String userID) {
 	  ArrayList<Journal> journals = new ArrayList<Journal>();
 	  try{
 		  PreparedStatement pstatement = conn.prepareStatement("select * from journal");
@@ -168,13 +166,7 @@ public class Database {
 		  while(rs.next()){
 			  Journal journal = new Journal(rs.getInt("id"), rs.getString("doctor"), rs.getString("nurse"), rs.getString("patient"), rs.getString("district"), rs.getString("content"));
 			  journals.add(journal);
-		      System.out.println("id = " + rs.getInt("id"));
-		      System.out.println("doctor = " + rs.getString("doctor"));
-		      System.out.println("nurse = " + rs.getString("nurse"));
-		      System.out.println("patient = " + rs.getString("patient"));
-		      System.out.println("district = " + rs.getString("district"));
-		      System.out.println("content = " + rs.getString("content"));
-		      log.writeLog(rs.getInt("id"), "Some Doctor", "read");
+		    log.writeLog(rs.getInt("id"), userID, "read");
 		  }
 	  }catch(SQLException e){
 		  System.err.println("SQL Exception: " + e.getMessage());
