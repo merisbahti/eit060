@@ -18,25 +18,25 @@ public class DatabaseTest extends junit.framework.TestCase {
           System.err.print("You done good'd");
         }
         // add two journals
-        db.insertJournal(new Journal("Hanna", "Robin", "Meris", "Psyk","Massa info om patient"));
-        db.insertJournal(new Journal("Doctor Who", "Nurse A", "John Doe", "South Wing","Lots and lots of info"));
+        db.insertJournal(new Journal("Hanna", "Robin", "Meris", "Psyk","Massa info om patient"), "testUser");
+        db.insertJournal(new Journal("Doctor Who", "Nurse A", "John Doe", "South Wing","Lots and lots of info"), "testUser");
     }
     public void testUpdate(){
     	System.out.println("Journal before editing:");
-    	db.getJournal(1);
-    	boolean succeeded = db.updateJournal(1, "Albin mar skit.");
+    	db.getJournal("1", "testUser");
+    	boolean succeeded = db.updateJournal("1", "Albin mar skit.", "testUser");
     	System.out.println("Journal after editing:");
-    	db.getJournal(1);
+    	db.getJournal("1", "testUser");
     	assert(succeeded);
     }
     public void testGetMyJournals() {
-    	db.getMyJournals();
+    	db.getMyJournals("testUser");
     	assert(true);
     }
 
     public void tearDown() {
     	db.printLog();
-    	db.deleteJournal(1);
+    	db.deleteJournal("1","testUser");
     	boolean succeeded = db.dropJournalsAndClearLog();
     	assert(succeeded);
     }

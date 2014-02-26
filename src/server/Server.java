@@ -9,16 +9,26 @@ import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
 import model.*;
 import java.util.ArrayList;
+import model.*;
 
 
 
 public class Server implements Runnable {
 	private ServerSocket serverSocket = null;
 	private static int numConnectedClients = 0;
+	private static Database db;
 
 	public Server(ServerSocket ss) throws IOException {
 		serverSocket = ss;
 		newListener();
+		try {
+			db = new Database();
+		} catch (ClassNotFoundException e) {
+			System.err.print("You done good'd");
+		}
+		// add two journals
+		db.insertJournal(new Journal("Hanna", "Robin", "Meris", "Psyk","Massa info om patient"), "server");
+		db.insertJournal(new Journal("Doctor Who", "Nurse A", "John Doe", "South Wing","Lots and lots of info"), "server");
 	}
 
 	public void run() {
@@ -27,11 +37,11 @@ public class Server implements Runnable {
 			newListener();
 			SSLSession session = socket.getSession();
 			X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
-			String subject = cert.getSubjectDN().getName();
+			String dn = (cert.getSubjectDN().getName().split(", ")[0].split("=")[1]);
 			numConnectedClients++;
 
 			System.out.println("client connected");
-			System.out.println("client name (cert subject DN field): " + subject);
+			System.out.println("id: " + dn);
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
       ObjectOutputStream outSocket = new ObjectOutputStream(socket.getOutputStream());
@@ -40,7 +50,7 @@ public class Server implements Runnable {
       Request req = null;
       try {
         while ((req = (Request) inSocket.readObject()) != null) {
-          Response resp = generateResponse(req); 
+          Response resp = generateResponse(req, dn); 
           if (resp!=null) {
             outSocket.writeObject(resp);
             outSocket.flush();
@@ -57,14 +67,12 @@ public class Server implements Runnable {
 			System.out.println("client disconnected");
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 		} catch (IOException e) {
-			System.out.println("Client died: " + e.getMessage());
-			e.printStackTrace();
+			System.out.println("Client probably didn't die but disconnected instead: " + e.getMessage());
 			return;
 		}
 	}
 
     private void newListener() { (new Thread(this)).start(); } // calls run()
-
     public static void main(String args[]) {
         System.out.println("\nServer Started\n");
         int port = -1;
@@ -111,21 +119,21 @@ public class Server implements Runnable {
         return null;
     }
 
-    private static Response generateResponse(Request req) {
+    private static Response generateResponse(Request req, String userId) {
           if (req instanceof ReadRequest) {
             ReadRequest readRequest = (ReadRequest) req;
             String id = readRequest.getID();
-            return new AckResponse(true, "ReadRequest recieved");
+            return new AckResponse(true, db.getJournal(id, userId).getContent());
           } else if (req instanceof ListRequest) {
-            return new AckResponse(false, "Listrequest recieved");
+            return new AckResponse(false, "Listrequest recieved from: " + userId);
           } else if (req instanceof DeleteRequest) {
-            return new AckResponse(false, "Deleterequest recieved");
+            return new AckResponse(false, "Deleterequest recieved from: " + userId);
           } else if (req instanceof AddRequest) {
-            return new AckResponse(false, " Addrequest recieved");
+            return new AckResponse(false, "Addrequest recieved from: " + userId);
           } else if (req instanceof EditRequest) {
-            return new AckResponse(false, "EditRequest recieved");
+            return new AckResponse(false, "EditRequest recieved from: " + userId);
           } else {
-            return new AckResponse(false, "Don't know wtf recieved");
+            return new AckResponse(false, "Don't know wtf recieved from: " + userId);
           }
     
     }

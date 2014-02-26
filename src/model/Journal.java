@@ -41,4 +41,7 @@ public Journal(int ID, String doctor, String nurse, String patient, String distr
   public String getPatient(){
 	  return patient;
   }
+	public String getDistrict() {
+		return district;	
+	}
 }

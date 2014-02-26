@@ -41,7 +41,7 @@ public class Client {
 		try { /* set up a key manager for client authentication */
 			SSLSocketFactory factory = null;
 			try {
-				char[] password = "password".toCharArray();
+				char[] password = "hejsan2".toCharArray();
 				KeyStore ks = KeyStore.getInstance("JKS");
 				KeyStore ts = KeyStore.getInstance("JKS");
 				KeyManagerFactory kmf = KeyManagerFactory
@@ -106,7 +106,7 @@ public class Client {
           System.out.print("sending '"+ req.getID() +"' to server...");
           System.out.println("done");
           Response resp = (Response) inStream.readObject();
-          System.out.println("Recieved response with message: " + resp.getMessage());
+          System.out.println("Recieved response with message:\n" + resp.getMessage());
         }
 			}
 			in.close();
