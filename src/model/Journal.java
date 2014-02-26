@@ -44,4 +44,9 @@ public Journal(int ID, String doctor, String nurse, String patient, String distr
 	public String getDistrict() {
 		return district;	
 	}
+	
+	public String toString() {
+		return "Doc: " + doctor + "; Nurse: " + nurse + "; Patient: " + patient + "\n" + content;	
+	
+	}
 }

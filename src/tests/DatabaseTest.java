@@ -23,9 +23,13 @@ public class DatabaseTest extends junit.framework.TestCase {
     }
     public void testUpdate(){
     	System.out.println("Journal before editing:");
+    	for (Journal j : db.getMyJournals("testUser")) 
+				System.out.println(j.toString());
     	db.getJournal("1", "testUser");
     	boolean succeeded = db.updateJournal("1", "Albin mar skit.", "testUser");
     	System.out.println("Journal after editing:");
+    	for (Journal j : db.getMyJournals("testUser")) 
+				System.out.println(j.toString());
     	db.getJournal("1", "testUser");
     	assert(succeeded);
     }
