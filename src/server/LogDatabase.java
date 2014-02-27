@@ -72,18 +72,21 @@ public class LogDatabase {
 			  return false;
 		  }
 	  }
-	  public boolean printLog(){
-		  try{
-			  System.out.println("LOG:");
-			  PreparedStatement pstatement = conn.prepareStatement("select * from log");
-			  ResultSet rs = pstatement.executeQuery();
-			  while(rs.next()){
-				  System.out.println("ID: "+ rs.getString("id") + "  User: " + rs.getString("user") + "  Query: " + rs.getString("query") + "  Date: " + rs.getString("date"));
+	  public boolean printLog(String groupID){
+		  if(groupID.isEqual("admin")){
+			  try{
+				  System.out.println("LOG:");
+				  PreparedStatement pstatement = conn.prepareStatement("select * from log");
+				  ResultSet rs = pstatement.executeQuery();
+				  while(rs.next()){
+					  System.out.println("ID: "+ rs.getString("id") + "  User: " + rs.getString("user") + "  Query: " + rs.getString("query") + "  Date: " + rs.getString("date"));
+				  }
+				  return true;
+			  }catch(SQLException e){
+				  System.err.println("SQL Exception: " + e.getMessage());
+				  return false;
 			  }
-			  return true;
-		  }catch(SQLException e){
-			  System.err.println("SQL Exception: " + e.getMessage());
+		  }else{
 			  return false;
 		  }
-	  }
 }
