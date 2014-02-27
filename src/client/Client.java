@@ -192,7 +192,7 @@ public class Client {
       String patientSSN = read.readLine();
       System.out.println("Content: ");
       String content = read.readLine();
-      return new Journal("roppe", nurseSSN, patientSSN, content, "district 9");
+      return new Journal("NULL", nurseSSN, patientSSN, "NULL", content);
     } catch (IOException e) {
       return null;
     }

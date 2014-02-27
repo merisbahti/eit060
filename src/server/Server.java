@@ -124,7 +124,10 @@ public class Server implements Runnable {
     private static Response generateResponse(Request req, String userID, String type, String groupID) {
           if (req instanceof ReadRequest) 
           {
-            return new AckResponse(true, db.getJournal(req.getID(), userID, groupID, type).getContent());
+            Journal jurre = db.getJournal(req.getID(), userID, groupID, type);
+            if (jurre == null) 
+              return new AckResponse(false, "acces requred to red file");
+            return new AckResponse(true, jurre.toString());
           } 
           else if (req instanceof ListRequest) 
           {
@@ -143,6 +146,7 @@ public class Server implements Runnable {
             AddRequest addRequest = (AddRequest) req;
             Journal inJourn = addRequest.getJournal();
             Journal journ = new Journal(userID, inJourn.getNurse(), inJourn.getPatient(), groupID, inJourn.getContent());
+
             return new AckResponse(true, "Addrequest recieved from: " + userID + " Containing: \n" + journ + "\n" + 
                 "result : " + db.insertJournal(journ, userID, type));
             
