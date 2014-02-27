@@ -89,11 +89,11 @@ public class Database {
 			return true;
 		} catch (SQLException e) {
 			System.err.println("SQL Exception: " + e.getMessage());
-			log.writeLog("newID", userID, "attempted insert, sql error");
+			log.writeLog("new ID", userID, "attempted insert, sql error");
 			return false;
 		}
 	} else {
-		log.writeLog("", userID, "attempted insert, unauthorized");
+		log.writeLog("new ID", userID, "attempted insert, unauthorized");
 		return false;
 	}
   }
