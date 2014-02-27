@@ -176,7 +176,7 @@ public class Client {
       return new LogRequest();
 		case "H":
 			System.out
-					.print("Usage:\nTo read a file: R id\nTo add a file: A \nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\nTo access log: LS\n");
+					.print("Usage:\nTo read a file: R id\nTo add a file: A \nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\nTo access log: LS\nTo quit client: quit\n");
 			break;
 		default:
 			System.out
