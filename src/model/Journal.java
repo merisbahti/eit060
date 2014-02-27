@@ -53,4 +53,9 @@ public Journal(int ID, String doctor, String nurse, String patient, String distr
 	public void setID(int ID){
 		this.ID = ID;
 	}
+
+	public String getMetaData() {
+		return "ID: " + ID + "; Doc: " + doctor + "; Nurse: " + nurse + "; Patient: " + patient;  	
+	}
+
 }
