@@ -67,6 +67,7 @@ public class Database {
    * Return false if ID already exists.
    */
   public boolean insertJournal(Journal journal, String userID, String type) {
+  System.out.println("insert get'd" + userID + " type: "+ type);
 	if (type == "doctor") {
 		try {
 			String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -124,6 +125,7 @@ public class Database {
     	  log.writeLog(Integer.toString(id), userID, "attempted read, unauthorized");
     	  return journal;
       }
+
       pstatement.setQueryTimeout(30);  
       ResultSet rs = pstatement.executeQuery();
       // @TODO: Handle empty journal

@@ -2,6 +2,8 @@ package client;
 
 import java.net.*;
 import java.io.*;
+import java.io.Console;
+
 import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
 import java.security.KeyStore;
@@ -23,7 +25,6 @@ import java.util.ArrayList;
 public class Client {
 
 	public static void main(String[] args) throws Exception {
-		
 		String host = null;
 		int port = -1;
 		for (int i = 0; i < args.length; i++) {
@@ -44,7 +45,6 @@ public class Client {
 		try { /* set up a key manager for client authentication */
 			SSLSocketFactory factory = null;
 			try {
-				char[] password = "hejsan2".toCharArray();
 				KeyStore ks = KeyStore.getInstance("JKS");
 				KeyStore ts = KeyStore.getInstance("JKS");
 				KeyManagerFactory kmf = KeyManagerFactory
@@ -52,28 +52,28 @@ public class Client {
 				TrustManagerFactory tmf = TrustManagerFactory
 						.getInstance("SunX509");
 				
-				
 				SSLContext ctx = SSLContext.getInstance("TLS");
 			    BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-				System.out.println("Input keystore path.");
-				String inputKeystore = read.readLine();
-				System.out.println("Input keystore password.");
-				Console console = System.console();
-				char[] inputPass = read.readLine().toCharArray();
-				System.out.println("Input truststore path.");
-				String inputTruststore = read.readLine();
-				ks.load(new FileInputStream(inputKeystore), inputPass); // keystore
+        //System.out.println("Enter keystore name, the path will be stores/?keystore and stores/?truststore");
+
+        String inputKeystore = System.console().readLine("Keystore: ");
+        char[] inputPass = System.console().readPassword("Password: ");
+				ks.load(new FileInputStream("stores/"+inputKeystore+"keystore"), inputPass); // keystore
 																					// password
 																					// (storepass)
-				ts.load(new FileInputStream(inputTruststore),
+				ts.load(new FileInputStream("stores/"+inputKeystore+"truststore"),
 						inputPass); // truststore password (storepass);
 				
 				kmf.init(ks, inputPass); // user password (keypass)
 				tmf.init(ts); // keystore can be used as truststore here
 				ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 				factory = ctx.getSocketFactory();
-			} catch (Exception e) {
+			} catch (IOException e) { 
+        System.out.println(e.getMessage());
 				throw new IOException(e.getMessage());
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+				throw new Exception(e.getMessage());
 			}
 			SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
 			System.out.println("\nsocket before handshake:\n" + socket + "\n");
@@ -141,22 +141,19 @@ public class Client {
         System.out.println("Wrongly formatted command");
         return null;
       }
-			request = new ReadRequest(cmd[1]);
-			break;
+			return new ReadRequest(cmd[1]);
 		case "A":
       Journal journal = null;
       while (journal == null) {
         journal = promptJournal();
       }
-      request = new AddRequest(journal);
-			break;
+      return  new AddRequest(journal);
 		case "D":
       if (cmd.length != 2) {
         System.out.println("Wrongly formatted command");
         return null;
       }
-      request = new DeleteRequest(cmd[1]);
-			break;
+      return new DeleteRequest(cmd[1]);
 		case "W":
       if (cmd.length != 2) {
         System.out.println("Wrongly formatted command");
@@ -166,16 +163,14 @@ public class Client {
         BufferedReader readr = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Say what you want to add to the journal: ");
         String robinaerfull= readr.readLine();
-        request = new EditRequest(cmd[1], robinaerfull);
+        return new EditRequest(cmd[1], robinaerfull);
       } catch (IOException e) {
         System.out.print("You are not really dooing stuff right");
         return null;
       }
-			break;
 		case "L":
 			System.out.println("Sending list request");
-      request = new ListRequest();
-			break;
+      return new ListRequest();
 		case "H":
 			System.out
 					.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\n");

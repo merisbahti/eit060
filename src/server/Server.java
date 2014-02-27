@@ -27,8 +27,6 @@ public class Server implements Runnable {
 			System.err.print("You done good'd");
 		}
 		// add two journals
-		db.insertJournal(new Journal("Hanna", "Robin", "Meris", "Psyk","Massa info om patient"), "server");
-		db.insertJournal(new Journal("Doctor Who", "Nurse A", "John Doe", "South Wing","Lots and lots of info"), "server");
 	}
 
 	public void run() {
@@ -38,11 +36,13 @@ public class Server implements Runnable {
 			SSLSession session = socket.getSession();
 			X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
 			String cn = (cert.getSubjectDN().getName().split(", ")[0].split("=")[1]);
+      String type = (cert.getSubjectDN().getName().split(", ")[1].split("=")[1]);
       String district = (cert.getSubjectDN().getName().split(", ")[2].split("=")[1]);
 			numConnectedClients++;
 
 			System.out.println("client connected");
 			System.out.println("id: " + cn);
+			System.out.println("type: " + type);
       System.out.println("district: " + district);
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
@@ -52,7 +52,7 @@ public class Server implements Runnable {
       Request req = null;
       try {
         while ((req = (Request) inSocket.readObject()) != null) {
-          Response resp = generateResponse(req, cn, district); 
+          Response resp = generateResponse(req, cn, type, district); 
           if (resp!=null) {
             outSocket.writeObject(resp);
             outSocket.flush();
@@ -121,23 +121,38 @@ public class Server implements Runnable {
         return null;
     }
 
-    private static Response generateResponse(Request req, String userId, String groupId) {
-          if (req instanceof ReadRequest) {
-            ReadRequest readRequest = (ReadRequest) req;
-            String id = readRequest.getID();
-
-            db.getJournal(id, userId);
-            return new AckResponse(true, db.getJournal(id, userId).getContent());
-          } else if (req instanceof ListRequest) {
-            return new AckResponse(false, "Listrequest recieved from: " + userId);
-          } else if (req instanceof DeleteRequest) {
-            return new AckResponse(false, "Deleterequest recieved from: " + userId);
-          } else if (req instanceof AddRequest) {
-            return new AckResponse(false, "Addrequest recieved from: " + userId);
-          } else if (req instanceof EditRequest) {
-            return new AckResponse(false, "EditRequest recieved from: " + userId);
-          } else {
-            return new AckResponse(false, "Don't know wtf recieved from: " + userId);
+    private static Response generateResponse(Request req, String userID, String type, String groupID) {
+          if (req instanceof ReadRequest) 
+          {
+            return new AckResponse(true, db.getJournal(req.getID(), userID, groupID, type).getContent());
+          } 
+          else if (req instanceof ListRequest) 
+          {
+            String journals = "\n";
+            for (Journal j : db.getMyJournals(userID, groupID, type))
+              journals += j.getMetaData() + "\n";
+            return new AckResponse(false, "Retrieved journals:"+journals);
+          } 
+          else if (req instanceof DeleteRequest) 
+          {
+            return new AckResponse(true, "attempted delete of: " + req.getID() + " result: " 
+                + db.deleteJournal(req.getID(), userID, type));
+          } 
+          else if (req instanceof AddRequest) 
+          {
+            AddRequest addRequest = (AddRequest) req;
+            return new AckResponse(false, "Addrequest recieved from: " + userID + " Containing: \n" + addRequest.getJournal() + "\n" + 
+                "result : " + db.insertJournal(addRequest.getJournal(), userID, type));
+          } 
+          else if (req instanceof EditRequest) 
+          {
+            EditRequest eReq = (EditRequest) req;
+            return new AckResponse(true, "Requesting to edit: " + eReq.getID() + 
+                " result: " + db.updateJournal(eReq.getID(), eReq.getContent(), userID, type));
+          } 
+          else 
+          {
+            return new AckResponse(false, "Don't know wtf recieved from: " + userID);
           }
     
     }
