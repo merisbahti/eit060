@@ -157,6 +157,15 @@ public class Server implements Runnable {
             return new AckResponse(true, "Requesting to edit: " + eReq.getID() + 
                 " result: " + db.updateJournal(eReq.getID(), eReq.getContent(), userID, type));
           } 
+          else if (req instanceof LogRequest) 
+          {
+            try {
+              LogDatabase db2 = new LogDatabase();
+              return new AckResponse(true, "Requesting log: \n" + db2.printLog());
+            } catch (Exception e) {
+              return new AckResponse(false, "ClassNotFounde");
+            }
+          } 
           else 
           {
             return new AckResponse(false, "Don't know wtf recieved from: " + userID);
