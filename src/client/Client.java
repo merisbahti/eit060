@@ -119,7 +119,7 @@ public class Client {
           outStream.flush();
           System.out.print("sending '"+ req.getID() +"' to server...");
           System.out.println("done");
-          Response resp = (Response) inStream.readObject();
+          AckResponse resp = (AckResponse) inStream.readObject();
           System.out.println("Recieved response with message:\n" + resp.getMessage());
         }
 			}
@@ -171,9 +171,12 @@ public class Client {
 		case "L":
 			System.out.println("Sending list request");
       return new ListRequest();
+		case "LS":
+			System.out.println("Sending log request");
+      return new LogRequest();
 		case "H":
 			System.out
-					.print("Usage:\nTo read a file: R id\nTo add a file: A content\nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\n");
+					.print("Usage:\nTo read a file: R id\nTo add a file: A \nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\nTo access log: LS");
 			break;
 		default:
 			System.out
@@ -193,8 +196,7 @@ public class Client {
       System.out.println("Content: ");
       String content = read.readLine();
       return new Journal("NULL", nurseSSN, patientSSN, "NULL", content);
-    } catch (IOException e) {
-      return null;
+    } catch (IOException e) { return null;
     }
   }
 

@@ -52,7 +52,7 @@ public class Server implements Runnable {
       Request req = null;
       try {
         while ((req = (Request) inSocket.readObject()) != null) {
-          Response resp = generateResponse(req, cn, type, district); 
+          AckResponse resp = generateResponse(req, cn, type, district); 
           if (resp!=null) {
             outSocket.writeObject(resp);
             outSocket.flush();
@@ -121,7 +121,7 @@ public class Server implements Runnable {
         return null;
     }
 
-    private static Response generateResponse(Request req, String userID, String type, String groupID) {
+    private static AckResponse generateResponse(Request req, String userID, String type, String groupID) {
           if (req instanceof ReadRequest) 
           {
             Journal jurre = db.getJournal(req.getID(), userID, groupID, type);

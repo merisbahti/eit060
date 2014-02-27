@@ -1,6 +1,7 @@
 package model;
+import java.io.Serializable;
 
-public class AckResponse implements Response {
+public class AckResponse implements Serializable{
   private final boolean ack;
   private final String msg;
 

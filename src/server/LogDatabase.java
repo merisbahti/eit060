@@ -86,4 +86,21 @@ public class LogDatabase {
 			  return false;
 		  }
 	  }
+
+	  public String printLog(String groupID){
+      if (!groupID.equals("admin"))
+        return "empty";
+		  try{
+        String res = "";
+			  PreparedStatement pstatement = conn.prepareStatement("select * from log");
+			  ResultSet rs = pstatement.executeQuery();
+			  while(rs.next()){
+				 res += ("ID: "+ rs.getString("id") + "  User: " + rs.getString("user") + "  Query: " + rs.getString("query") + "  Date: " + rs.getString("date"))+"\n";
+			  }
+			  return res;
+		  }catch(SQLException e){
+			  System.err.println("SQL Exception: " + e.getMessage());
+			  return "error";
+		  }
+	  }
 }
