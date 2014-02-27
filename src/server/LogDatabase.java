@@ -73,7 +73,7 @@ public class LogDatabase {
 		  }
 	  }
 	  public boolean printLog(String groupID){
-		  if(groupID.isEqual("admin")){
+		  if(groupID.equals("admin")){
 			  try{
 				  System.out.println("LOG:");
 				  PreparedStatement pstatement = conn.prepareStatement("select * from log");
