@@ -51,16 +51,16 @@ public class LogDatabase {
 	      statement.setQueryTimeout(30); 
 	      //statement.executeUpdate(sql);
 	      //clearLog();
-	      statement.executeUpdate("create table if not exists log(id int, user string, query string, date string)");
+	      statement.executeUpdate("create table if not exists log(id string, user string, query string, date string)");
 	    } catch (SQLException e) {
 	      System.err.println("SQL Exception: " + e.getMessage());
 	    }
 	  }
-	  public boolean writeLog(int id, String user, String query){
+	  public boolean writeLog(String id, String user, String query){
 		  try{
 			  String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 			  PreparedStatement pstatement = conn.prepareStatement("insert into log (id, user, query, date) values(?, ?, ?, ?)");
-			  pstatement.setInt(1,id);
+			  pstatement.setString(1,id);
 			  pstatement.setString(2, user);
 			  pstatement.setString(3, query);
 			  pstatement.setString(4, date);
@@ -78,7 +78,7 @@ public class LogDatabase {
 			  PreparedStatement pstatement = conn.prepareStatement("select * from log");
 			  ResultSet rs = pstatement.executeQuery();
 			  while(rs.next()){
-				  System.out.println("ID: "+ rs.getInt("id") + "  User: " + rs.getString("user") + "  Query: " + rs.getString("query") + "  Date: " + rs.getString("date"));
+				  System.out.println("ID: "+ rs.getString("id") + "  User: " + rs.getString("user") + "  Query: " + rs.getString("query") + "  Date: " + rs.getString("date"));
 			  }
 			  return true;
 		  }catch(SQLException e){
