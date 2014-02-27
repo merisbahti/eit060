@@ -100,7 +100,7 @@ public class Server implements Runnable {
                 KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
                 TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
                 KeyStore ks = KeyStore.getInstance("JKS");
-				KeyStore ts = KeyStore.getInstance("JKS");
+        				KeyStore ts = KeyStore.getInstance("JKS");
                 char[] password = "password".toCharArray();
 
                 ks.load(new FileInputStream("stores/serverkeystore"), password);  // keystore password (storepass)
@@ -123,8 +123,12 @@ public class Server implements Runnable {
           if (req instanceof ReadRequest) {
             ReadRequest readRequest = (ReadRequest) req;
             String id = readRequest.getID();
+
+            db.getJournal(id, userId);
+
             return new AckResponse(true, db.getJournal(id, userId).getContent());
           } else if (req instanceof ListRequest) {
+
             return new AckResponse(false, "Listrequest recieved from: " + userId);
           } else if (req instanceof DeleteRequest) {
             return new AckResponse(false, "Deleterequest recieved from: " + userId);

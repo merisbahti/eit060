@@ -54,19 +54,18 @@ public class Client {
 				
 				
 				SSLContext ctx = SSLContext.getInstance("TLS");
-				
-				
+			    BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 				System.out.println("Input keystore path.");
 				String inputKeystore = read.readLine();
 				System.out.println("Input keystore password.");
-				String inputPass = read.readLine();
+				char[] inputPass = read.readLine().toCharArray();
 				System.out.println("Input truststore path.");
 				String inputTruststore = read.readLine();
 				ks.load(new FileInputStream(inputKeystore), inputPass); // keystore
 																					// password
 																					// (storepass)
 				ts.load(new FileInputStream(inputTruststore),
-						password); // truststore password (storepass);
+						inputPass); // truststore password (storepass);
 				
 				kmf.init(ks, inputPass); // user password (keypass)
 				tmf.init(ts); // keystore can be used as truststore here
