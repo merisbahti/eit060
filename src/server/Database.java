@@ -77,11 +77,7 @@ public class Database {
       pstatement.setString(5, dbContent);
       pstatement.setQueryTimeout(30);  
       pstatement.executeUpdate();
-      /*
-       * TODO:
-       * Find primary key for last insert
-       * Update log
-       */
+
       return true;
     } catch (SQLException e) {
       System.err.println("SQL Exception: " + e.getMessage());
