@@ -67,8 +67,7 @@ public class Database {
    * Return false if ID already exists.
    */
   public boolean insertJournal(Journal journal, String userID, String type) {
-  System.out.println("insert get'd" + userID + " type: "+ type);
-	if (type == "doctor") {
+	if (type.equals("doctor")) {
 		try {
 			String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 			String dbContent = String.format(date + "%n" + journal.getContent());
@@ -108,19 +107,19 @@ public class Database {
 	  Journal journal = null;
     try { 
     	PreparedStatement pstatement;
-      if(type == "government"){
+      if(type.equals("government")){
     	  pstatement = conn.prepareStatement("select * from journal where ID=?");
     	  pstatement.setInt(1,id);
-      }else if(type == "patient"){
+      }else if(type.equals("patient")){
     	  pstatement = conn.prepareStatement("select * from journal where ID=? and patient=?");
     	  pstatement.setInt(1,id);
     	  pstatement.setString(2,userID);
-      }else if((type == "nurse") || (type == "doctor")){
-    	  pstatement = conn.prepareStatement("select * from journal where ID=? and (?=? or district=?)"); 
+      }else if((type.equals("nurse")) || (type.equals("doctor"))){
+    	  System.out.println("---read----doctor/nurse-----");
+    	  pstatement = conn.prepareStatement("select * from journal where ID=? and ("+type+"=? or district=?)"); 
     	  pstatement.setInt(1,id);
-    	  pstatement.setString(2, type);
-    	  pstatement.setString(3, userID);
-    	  pstatement.setString(4, groupID);
+    	  pstatement.setString(2, userID);
+    	  pstatement.setString(3, groupID);
       }else{
     	  log.writeLog(Integer.toString(id), userID, "attempted read, unauthorized");
     	  return journal;
@@ -151,7 +150,7 @@ public class Database {
    * Return boolean if sucess!
    */
   public boolean deleteJournal(String journalID, String userID, String type) {
-	  if(type == "government"){
+	  if(type.equals("government")){
 		  int id = Integer.parseInt(journalID);
 		  try{
 			  PreparedStatement pstatement = conn.prepareStatement("delete from journal where ID = ?");
@@ -172,28 +171,33 @@ public class Database {
   }
 
   public boolean updateJournal(String journalID, String content, String userID, String type){
-	  if((type == "doctor") || (type == "nurse")){
+	  if((type.equals("doctor")) || (type.equals("nurse"))){
 		  int id = Integer.parseInt(journalID);
 		  try{
-			  PreparedStatement pstatement = conn.prepareStatement("select content from journal where id=? and ?=?");
+			  PreparedStatement pstatement = conn.prepareStatement("select content from journal where id=? and "+type+"=?");
 			  pstatement.setInt(1, id);
-			  pstatement.setString(2, type);
-			  pstatement.setString(3, userID);
+			  pstatement.setString(2, userID);
 			  ResultSet rs = pstatement.executeQuery();
 			  String dbContent = "";
-			  while(rs.next()){
+			  boolean exists = rs.next();
+			  if(exists){
 				  dbContent = rs.getString("content");
+				  String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+				  dbContent = String.format(dbContent + "%n %n" + date + "%n" + content);
+				  pstatement = conn.prepareStatement("update journal set content = ? where ID = ?");
+				  pstatement.setString(1,dbContent);
+				  pstatement.setInt(2,id);
+				  pstatement.executeUpdate();
+				  log.writeLog(journalID, userID, "update");
+				  rs.close();
+				  pstatement.close();
+				  return true;
+			  }else{
+				  rs.close();
+				  pstatement.close();
+				  log.writeLog(journalID, userID, "attempted update, unauthorized or not found");
+				  return false;
 			  }
-			  String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-			  dbContent = String.format(dbContent + "%n %n" + date + "%n" + content);
-			  pstatement = conn.prepareStatement("update journal set content = ? where ID = ?");
-			  pstatement.setString(1,dbContent);
-			  pstatement.setInt(2,id);
-			  pstatement.executeUpdate();
-			  log.writeLog(journalID, userID, "update");
-			  rs.close();
-			  pstatement.close();
-			  return true;
 		  }catch(SQLException e){
 			  System.err.println("SQL Exception: " + e.getMessage());
 			  log.writeLog(Integer.toString(id), userID, "attempted update, unauthorized or not found");
@@ -211,18 +215,16 @@ public class Database {
 	  ArrayList<Journal> journals = new ArrayList<Journal>();
 	  try{
 		  PreparedStatement pstatement;
-		  if((type == "doctor") || (type == "nurse")){
-			  pstatement = conn.prepareStatement("select * from journal where district=? or ?=?");
+		  if((type.equals("doctor")) || (type.equals("nurse"))){
+			  pstatement = conn.prepareStatement("select * from journal where district=? or "+type+"=?");
 			  pstatement.setString(1, groupID);
-			  pstatement.setString(2, type);
-			  pstatement.setString(3, userID);
-		  }else if (type == "government"){
+			  pstatement.setString(2, userID);
+		  }else if (type.equals("government")){
 			  pstatement = conn.prepareStatement("select * from journal");
-		  }else if(type == "patient"){
+		  }else if(type.equals("patient")){
 			  pstatement = conn.prepareStatement("select * from journal where patient=?");
 			  pstatement.setString(1, userID);
 		  }else{
-			  journals = null;
 			  log.writeLog("multiple IDs", userID, "attempted list, unauthorized");
 			  return journals;
 		  }

@@ -142,7 +142,10 @@ public class Server implements Runnable {
           {
             AddRequest addRequest = (AddRequest) req;
             return new AckResponse(false, "Addrequest recieved from: " + userID + " Containing: \n" + addRequest.getJournal() + "\n" + 
-                "result : " + db.insertJournal(addRequest.getJournal(), userID, type));
+                "result : " + db.insertJournal(
+                  new Journal(userID, addRequest.getJournal().getNurse(), addRequest.getJournal().getPatient(),
+                    addRequest.getJournal().getDistrict(), addRequest.getJournal().getContent())
+                  , userID, type));
           } 
           else if (req instanceof EditRequest) 
           {
