@@ -9,6 +9,8 @@ import java.security.cert.*;
 import model.*;
 import java.util.ArrayList;
 
+
+
 /*
  * This example shows how to set up a key manager to perform client
  * authentication.
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 public class Client {
 
 	public static void main(String[] args) throws Exception {
+		
 		String host = null;
 		int port = -1;
 		for (int i = 0; i < args.length; i++) {
@@ -48,13 +51,24 @@ public class Client {
 						.getInstance("SunX509");
 				TrustManagerFactory tmf = TrustManagerFactory
 						.getInstance("SunX509");
+				
+				
 				SSLContext ctx = SSLContext.getInstance("TLS");
-				ks.load(new FileInputStream("stores/clientkeystore"), password); // keystore
+				
+				
+				System.out.println("Input keystore path.");
+				String inputKeystore = read.readLine();
+				System.out.println("Input keystore password.");
+				String inputPass = read.readLine();
+				System.out.println("Input truststore path.");
+				String inputTruststore = read.readLine();
+				ks.load(new FileInputStream(inputKeystore), inputPass); // keystore
 																					// password
 																					// (storepass)
-				ts.load(new FileInputStream("stores/clienttruststore"),
+				ts.load(new FileInputStream(inputTruststore),
 						password); // truststore password (storepass);
-				kmf.init(ks, password); // user password (keypass)
+				
+				kmf.init(ks, inputPass); // user password (keypass)
 				tmf.init(ts); // keystore can be used as truststore here
 				ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 				factory = ctx.getSocketFactory();
@@ -71,7 +85,7 @@ public class Client {
 			 * a forced handshake here when using PrintWriters.
 			 */
 			socket.startHandshake();
-
+			
 			SSLSession session = socket.getSession();
 			X509Certificate cert = (X509Certificate) session
 					.getPeerCertificateChain()[0];
