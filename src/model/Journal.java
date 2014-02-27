@@ -55,7 +55,7 @@ public Journal(int ID, String doctor, String nurse, String patient, String distr
 	}
 
 	public String getMetaData() {
-		return "ID: " + ID + "; Doc: " + doctor + "; Nurse: " + nurse + "; Patient: " + patient;  	
+		return "ID: " + ID + "; Doc: " + doctor + "; Nurse: " + nurse + "; Patient: " + patient + "; district: " + district;  	
 	}
 
 }
