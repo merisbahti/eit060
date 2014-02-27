@@ -37,11 +37,13 @@ public class Server implements Runnable {
 			newListener();
 			SSLSession session = socket.getSession();
 			X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
-			String dn = (cert.getSubjectDN().getName().split(", ")[0].split("=")[1]);
+			String cn = (cert.getSubjectDN().getName().split(", ")[0].split("=")[1]);
+      String district = (cert.getSubjectDN().getName().split(", ")[2].split("=")[1]);
 			numConnectedClients++;
 
 			System.out.println("client connected");
-			System.out.println("id: " + dn);
+			System.out.println("id: " + cn);
+      System.out.println("district: " + district);
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
       ObjectOutputStream outSocket = new ObjectOutputStream(socket.getOutputStream());
@@ -50,7 +52,7 @@ public class Server implements Runnable {
       Request req = null;
       try {
         while ((req = (Request) inSocket.readObject()) != null) {
-          Response resp = generateResponse(req, dn); 
+          Response resp = generateResponse(req, cn, district); 
           if (resp!=null) {
             outSocket.writeObject(resp);
             outSocket.flush();
@@ -119,16 +121,14 @@ public class Server implements Runnable {
         return null;
     }
 
-    private static Response generateResponse(Request req, String userId) {
+    private static Response generateResponse(Request req, String userId, String groupId) {
           if (req instanceof ReadRequest) {
             ReadRequest readRequest = (ReadRequest) req;
             String id = readRequest.getID();
 
             db.getJournal(id, userId);
-
             return new AckResponse(true, db.getJournal(id, userId).getContent());
           } else if (req instanceof ListRequest) {
-
             return new AckResponse(false, "Listrequest recieved from: " + userId);
           } else if (req instanceof DeleteRequest) {
             return new AckResponse(false, "Deleterequest recieved from: " + userId);

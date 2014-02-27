@@ -58,6 +58,7 @@ public class Client {
 				System.out.println("Input keystore path.");
 				String inputKeystore = read.readLine();
 				System.out.println("Input keystore password.");
+				Console console = System.console();
 				char[] inputPass = read.readLine().toCharArray();
 				System.out.println("Input truststore path.");
 				String inputTruststore = read.readLine();
