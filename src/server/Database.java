@@ -82,6 +82,7 @@ public class Database {
 			ResultSet rs = pstatement.getGeneratedKeys();
 			rs.next();
 			int id = rs.getInt(1);
+			journal.setID(id);
 			rs.close();
 			pstatement.close();
 			log.writeLog(Integer.toString(id), userID, "insert");
