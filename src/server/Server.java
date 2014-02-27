@@ -30,8 +30,11 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
+      ObjectOutputStream outSocket = null;
+      ObjectInputStream inSocket = null; 
+      SSLSocket socket=null;
 		try {
-			SSLSocket socket=(SSLSocket)serverSocket.accept();
+			socket = (SSLSocket) serverSocket.accept();
 			newListener();
 			SSLSession session = socket.getSession();
 			X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
@@ -46,8 +49,8 @@ public class Server implements Runnable {
       System.out.println("district: " + district);
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
-      ObjectOutputStream outSocket = new ObjectOutputStream(socket.getOutputStream());
-      ObjectInputStream inSocket = new ObjectInputStream(socket.getInputStream());
+      outSocket = new ObjectOutputStream(socket.getOutputStream());
+      inSocket = new ObjectInputStream(socket.getInputStream());
 
       Request req = null;
       try {
@@ -70,6 +73,7 @@ public class Server implements Runnable {
 			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 		} catch (IOException e) {
 			System.out.println("Client probably didn't die but disconnected instead: " + e.getMessage());
+      numConnectedClients--;
 			return;
 		}
 	}
@@ -126,7 +130,7 @@ public class Server implements Runnable {
           {
             Journal jurre = db.getJournal(req.getID(), userID, groupID, type);
             if (jurre == null) 
-              return new AckResponse(false, "acces requred to red file");
+              return new AckResponse(false, "\"access denied\"... ?");
             return new AckResponse(true, jurre.toString());
           } 
           else if (req instanceof ListRequest) 
@@ -138,7 +142,7 @@ public class Server implements Runnable {
           } 
           else if (req instanceof DeleteRequest) 
           {
-            return new AckResponse(true, "attempted delete of: " + req.getID() + " result: " 
+            return new AckResponse(true, "Attempted delete of: " + req.getID() + " result: " 
                 + db.deleteJournal(req.getID(), userID, type));
           } 
           else if (req instanceof AddRequest) 
@@ -147,7 +151,7 @@ public class Server implements Runnable {
             Journal inJourn = addRequest.getJournal();
             Journal journ = new Journal(userID, inJourn.getNurse(), inJourn.getPatient(), groupID, inJourn.getContent());
 
-            return new AckResponse(true, "Addrequest recieved from: " + userID + " Containing: \n" + journ + "\n" + 
+            return new AckResponse(true, "Requesting to add from: " + userID + " Containing: \n" + journ + "\n" + 
                 "result : " + db.insertJournal(journ, userID, type));
             
           } 
@@ -161,7 +165,7 @@ public class Server implements Runnable {
           {
             try {
               LogDatabase db2 = new LogDatabase();
-              return new AckResponse(true, "Requesting log: \n" + db2.printLog());
+              return new AckResponse(true, "Requesting log: \n" + db2.printLog(groupID));
             } catch (Exception e) {
               return new AckResponse(false, "ClassNotFounde");
             }

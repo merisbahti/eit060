@@ -11,8 +11,6 @@ import java.security.cert.*;
 import model.*;
 import java.util.ArrayList;
 
-
-
 /*
  * This example shows how to set up a key manager to perform client
  * authentication.
@@ -133,58 +131,64 @@ public class Client {
 	}
 
 	private static Request generateRequest(String input) {
+
 		Request request = null;
 		String[] cmd = input.split(" ");
+
+    if (cmd.length < 1) 
+      return null;
+
 		switch (cmd[0]) {
-		case "R":
-      if (cmd.length != 2) {
-        System.out.println("Wrongly formatted command");
-        return null;
-      }
-			return new ReadRequest(cmd[1]);
-		case "A":
-      Journal journal = null;
-      while (journal == null) {
-        journal = promptJournal();
-      }
-      return  new AddRequest(journal);
-		case "D":
-      if (cmd.length != 2) {
-        System.out.println("Wrongly formatted command");
-        return null;
-      }
-      return new DeleteRequest(cmd[1]);
-		case "W":
-      if (cmd.length != 2) {
-        System.out.println("Wrongly formatted command");
-        return null;
-      }
-      try {
-        BufferedReader readr = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Say what you want to add to the journal: ");
-        String robinaerfull= readr.readLine();
-        return new EditRequest(cmd[1], robinaerfull);
-      } catch (IOException e) {
-        System.out.print("You are not really dooing stuff right");
-        return null;
-      }
-		case "L":
-			System.out.println("Sending list request");
-      return new ListRequest();
-		case "LS":
-			System.out.println("Sending log request");
-      return new LogRequest();
-		case "H":
-			System.out
-					.print("Usage:\nTo read a file: R id\nTo add a file: A \nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\nTo access log: LS");
-			break;
-		default:
-			System.out
-					.println("Not sure what to do with this, type \"H\" for usage.");
-			break;
+      case "R":
+        if (cmd.length != 2) {
+          System.out.println("Wrongly formatted command");
+          return null;
+        }
+        return new ReadRequest(cmd[1]);
+      case "A":
+        Journal journal = null;
+        while (journal == null) {
+          journal = promptJournal();
+        }
+        return  new AddRequest(journal);
+      case "D":
+        if (cmd.length != 2) {
+          System.out.println("Wrongly formatted command");
+          return null;
+        }
+        return new DeleteRequest(cmd[1]);
+      case "W":
+        if (cmd.length != 2) {
+          System.out.println("Wrongly formatted command");
+          return null;
+        }
+        try {
+          BufferedReader readr = new BufferedReader(new InputStreamReader(System.in));
+          System.out.println("Say what you want to add to the journal: ");
+          String robinaerfull= readr.readLine();
+          return new EditRequest(cmd[1], robinaerfull);
+        } catch (IOException e) {
+          System.out.print("You are not really dooing stuff right");
+          return null;
+        }
+      case "L":
+        System.out.println("Sending list request");
+        return new ListRequest();
+      case "LS":
+        System.out.println("Sending log request");
+        return new LogRequest();
+      case "H":
+        System.out
+            .print("Usage:\nTo read a file: R id\nTo add a file: A \nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\nTo access log: LS");
+        break;
+      default:
+        System.out
+            .println("Not sure what to do with this, type \"H\" for usage.");
+        break;
 		}
 		return request;
 	}
+ 
 
   private static Journal promptJournal(){
     try {
@@ -196,7 +200,8 @@ public class Client {
       System.out.println("Content: ");
       String content = read.readLine();
       return new Journal("NULL", nurseSSN, patientSSN, "NULL", content);
-    } catch (IOException e) { return null;
+    } catch (IOException e) { 
+      return null;
     }
   }
 
