@@ -52,7 +52,6 @@ public class Client {
 				
 				SSLContext ctx = SSLContext.getInstance("TLS");
 			    BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        //System.out.println("Enter keystore name, the path will be stores/?keystore and stores/?truststore");
 
         String inputKeystore = System.console().readLine("Keystore: ");
         char[] inputPass = System.console().readPassword("Password: ");
@@ -138,7 +137,7 @@ public class Client {
     if (cmd.length < 1) 
       return null;
 
-		switch (cmd[0]) {
+		switch (cmd[0].toUpperCase()) {
       case "R":
         if (cmd.length != 2) {
           System.out.println("Wrongly formatted command");
@@ -179,13 +178,13 @@ public class Client {
         return new LogRequest();
       case "H":
         System.out
-            .print("Usage:\nTo read a file: R id\nTo add a file: A \nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\nTo access log: LS");
+            .print("Usage:\nTo read a file: R id\nTo add a file: A \nTo delete a file: D id\nTo write to a file: W id\nTo list all files that you have access to: L\nTo access log: LS\nquit to exit the program.\n");
         break;
       default:
         System.out
             .println("Not sure what to do with this, type \"H\" for usage.");
         break;
-		}
+    }
 		return request;
 	}
  

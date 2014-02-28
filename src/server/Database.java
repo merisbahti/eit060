@@ -89,11 +89,11 @@ public class Database {
 			return true;
 		} catch (SQLException e) {
 			System.err.println("SQL Exception: " + e.getMessage());
-			log.writeLog("newID", userID, "attempted insert, sql error");
+			log.writeLog("new ID", userID, "attempted insert, sql error");
 			return false;
 		}
 	} else {
-		log.writeLog("", userID, "attempted insert, unauthorized");
+		log.writeLog("new ID", userID, "attempted insert, unauthorized");
 		return false;
 	}
   }
@@ -104,8 +104,13 @@ public class Database {
    * NullJournal / null if Journal doesn't exist, or access not granted.
    */
   public Journal getJournal(String journalID, String userID, String groupID, String type) {
-	  int id = Integer.parseInt(journalID);
+    int id = -1;
 	  Journal journal = null;
+    try {
+      id = Integer.parseInt(journalID);
+    } catch (NumberFormatException e) {
+      return journal;
+    }
     try { 
     	PreparedStatement pstatement;
       if(type.equals("government")){
