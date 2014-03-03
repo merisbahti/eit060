@@ -50,8 +50,8 @@ public class Client {
 				TrustManagerFactory tmf = TrustManagerFactory
 						.getInstance("SunX509");
 				
-				SSLContext ctx = SSLContext.getInstance("TLS");
-			    BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 
         String inputKeystore = System.console().readLine("Keystore: ");
         char[] inputPass = System.console().readPassword("Password: ");
@@ -114,8 +114,6 @@ public class Client {
         if (req!=null) {
           outStream.writeObject(req);
           outStream.flush();
-          System.out.print("sending '"+ req.getID() +"' to server...");
-          System.out.println("done");
           AckResponse resp = (AckResponse) inStream.readObject();
           System.out.println("Recieved response with message:\n" + resp.getMessage());
         }
